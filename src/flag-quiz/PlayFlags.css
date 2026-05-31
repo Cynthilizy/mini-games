@@ -1,0 +1,268 @@
+.flag-container {
+  display: flex;
+  justify-content: center;
+}
+
+.flag-container-inner {
+  width: 100%;
+  height: 60vh;
+  max-width: 1100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.start-flag {
+  width: 50vh;
+  height: 50vh;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 32px;
+}
+
+.start-flag-btn {
+  width: 50%;
+  padding: 14px 22px;
+  background: rgba(24, 55, 32, 0.35);
+
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.start-flag-btn:hover {
+  background: rgba(36, 92, 50, 0.45);
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.start-flag-btn:active {
+  transform: translateY(0);
+}
+
+.flag-top {
+  display: flex;
+  flex-direction: column;
+  height: 100px;
+  justify-content: space-around;
+}
+
+.play-flag-question-top {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 0;
+}
+
+.play-flag {
+  display: grid;
+  grid-template-columns: 15% 60% 15%;
+  justify-content: center;
+  width: 100%;
+  align-items: start;
+  margin: 0;
+  border-radius: 20px;
+
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(15px);
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.play-flag-score-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 14px;
+  border-radius: 16px;
+  height: 150px;
+}
+
+.play-flag-score-title {
+  margin: 0;
+  opacity: 0.8;
+}
+
+.play-flag-score {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.play-flag-question-container {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  justify-content: center;
+  height: 300px;
+}
+
+.play-flag-answer {
+  padding: 12px 16px;
+  border-radius: 12px;
+  color: inherit;
+  font-size: 1rem;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.play-flag-answer::placeholder {
+  opacity: 0.65;
+}
+
+.play-flag-answer:focus {
+  outline: none;
+
+  border-color: rgba(120, 180, 255, 0.6);
+
+  box-shadow: 0 0 0 3px rgba(120, 180, 255, 0.18);
+}
+
+.play-flag-user-board {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 14px;
+  border-radius: 16px;
+  height: 150px;
+}
+
+.play-flag-username {
+  margin: 0 0 8px;
+  font-weight: 600;
+}
+
+.play-flag-choices {
+  display: flex;
+  gap: 10px;
+}
+
+.flag-img {
+  max-height: 120px;
+  width: auto;
+  object-fit: contain;
+}
+
+.play-flag-submit-btn,
+.play-flag-user-stats,
+.play-flag-reset-btn,
+.play-flag-user-login {
+  padding: 12px 18px;
+
+  border: 0;
+  border-radius: 14px;
+
+  cursor: pointer;
+
+  color: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.play-flag-submit-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.play-flag-submit-btn:hover,
+.play-flag-reset-btn:hover,
+.play-flag-user-stats:hover,
+.play-flag-user-login:hover {
+  transform: translateY(-2px);
+  font-weight: bold;
+}
+
+.flag-pass-img,
+.flag-fail-img {
+  height: 1em;
+  width: auto;
+}
+
+.flag-timer {
+  display: flex;
+  justify-content: center;
+}
+
+.play-flag-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  margin: 0;
+  padding: 10px 16px;
+
+  border-radius: 14px;
+
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1;
+
+  background: rgba(255, 255, 255, 0.08);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  transition:
+    color 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.timer-danger {
+  color: #ff4d4d;
+  border-color: rgba(255, 77, 77, 0.45);
+
+  animation: pulseTimer 1s infinite;
+}
+
+.play-flag-timer svg {
+  width: 18px;
+  height: 18px;
+
+  flex-shrink: 0;
+}
+
+@media (max-width: 500px) {
+  .play-flag-choices {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .play-flag-submit-btn,
+  .play-flag-reset-btn {
+    width: 100%;
+  }
+}

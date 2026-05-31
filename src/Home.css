@@ -1,0 +1,19 @@
+.home-container {
+  display: flex;
+  justify-content: center;
+}
+
+.home-container-inner {
+  width: 100%;
+  max-width: 1100px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.game-choices {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  flex-wrap: wrap;
+}
