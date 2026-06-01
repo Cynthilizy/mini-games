@@ -1,4 +1,305 @@
-function PlaySnake() {
-  return <div></div>;
+import { useState, useEffect, useRef, useCallback } from "react";
+import "./PlaySnake.css";
+
+function PlaySnake({ theme, showSnake, setShowSnake }) {
+  const [showStats, setShowStats] = useState(false);
+  const [snake, setSnake] = useState([[5, 5]]);
+  const [direction, setDirection] = useState("RIGHT");
+  const [apple, setApple] = useState([10, 8]);
+  const [userScore, setUserScore] = useState(0);
+  const [username, SetUsername] = useState("");
+  const [running, setRunning] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
+  const [snakeFlash, setSnakeFlash] = useState(false);
+  const [snakeShake, setSnakeShake] = useState(false);
+  const [scorePop, setScorePop] = useState(false);
+
+  const directionRef = useRef("RIGHT");
+  const nextDirectionRef = useRef("RIGHT");
+  const appleRef = useRef([10, 8]);
+  const snakeRef = useRef([[5, 5]]);
+
+  const GRID_SIZE = 20;
+
+  const resetGame = () => {
+    setRunning(false); // STOP LOOP FIRST
+
+    const INITIAL_SNAKE = [[5, 5]];
+    const INITIAL_DIR = "RIGHT";
+    const INITIAL_APPLE = [10, 8];
+
+    snakeRef.current = INITIAL_SNAKE;
+    directionRef.current = INITIAL_DIR;
+    appleRef.current = INITIAL_APPLE;
+
+    setSnake(INITIAL_SNAKE);
+    setDirection(INITIAL_DIR);
+    setApple(INITIAL_APPLE);
+
+    setUserScore(0);
+    setIsPaused(false);
+    setSnakeFlash(false);
+
+    setTimeout(() => {
+      setRunning(true);
+    }, 0);
+  };
+
+  const spawnApple = (snake) => {
+    let newApple;
+
+    do {
+      newApple = [
+        Math.floor(Math.random() * GRID_SIZE),
+        Math.floor(Math.random() * GRID_SIZE),
+      ];
+    } while (
+      snake.some((seg) => seg[0] === newApple[0] && seg[1] === newApple[1])
+    );
+
+    return newApple;
+  };
+
+  const handleDirection = (newDir) => {
+    nextDirectionRef.current = newDir;
+  };
+
+  const syncSnake = (newSnake) => {
+    snakeRef.current = newSnake;
+    setSnake(newSnake);
+  };
+
+  const moveSnake = () => {
+    directionRef.current = nextDirectionRef.current;
+
+    const prevSnake = snakeRef.current;
+    const head = prevSnake[0];
+
+    let newX = head[0];
+    let newY = head[1];
+
+    if (directionRef.current === "RIGHT") newX++;
+    if (directionRef.current === "LEFT") newX--;
+    if (directionRef.current === "UP") newY--;
+    if (directionRef.current === "DOWN") newY++;
+
+    if (newX >= GRID_SIZE) newX = 0;
+    if (newX < 0) newX = GRID_SIZE - 1;
+    if (newY >= GRID_SIZE) newY = 0;
+    if (newY < 0) newY = GRID_SIZE - 1;
+
+    const newHead = [newX, newY];
+
+    const [appleX, appleY] = appleRef.current;
+    const ateApple = newX === appleX && newY === appleY;
+
+    let nextSnake = [newHead, ...prevSnake];
+
+    if (!ateApple) {
+      nextSnake = nextSnake.slice(0, -1);
+    }
+
+    const hitSelf = nextSnake.some(
+      (seg, i) => i !== 0 && seg[0] === newX && seg[1] === newY,
+    );
+
+    if (hitSelf) {
+      setRunning(false);
+      setSnakeFlash(true);
+      setSnakeShake(true);
+      setTimeout(() => setSnakeShake(false), 300);
+      return;
+    }
+
+    if (ateApple) {
+      setUserScore((s) => s + 1);
+      setScorePop(true);
+      setTimeout(() => setScorePop(false), 200);
+      const nextApple = spawnApple(nextSnake);
+      appleRef.current = nextApple;
+      setApple(nextApple);
+    }
+
+    syncSnake(nextSnake);
+  };
+
+  useEffect(() => {
+    appleRef.current = apple;
+  }, [apple]);
+
+  useEffect(() => {
+    const handleKey = (e) => {
+      const keyMap = {
+        ArrowUp: "UP",
+        ArrowDown: "DOWN",
+        ArrowLeft: "LEFT",
+        ArrowRight: "RIGHT",
+      };
+
+      const newDir = keyMap[e.key];
+      if (!newDir) return;
+
+      const opposite = {
+        UP: "DOWN",
+        DOWN: "UP",
+        LEFT: "RIGHT",
+        RIGHT: "LEFT",
+      };
+
+      if (directionRef.current === opposite[newDir]) return;
+      handleDirection(newDir);
+    };
+
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, []);
+
+  useEffect(() => {
+    if (!running || isPaused || snakeFlash) return;
+
+    const interval = setInterval(moveSnake, 1000);
+
+    return () => clearInterval(interval);
+  }, [running, isPaused, snakeFlash]);
+
+  return (
+    <div className="snake-container">
+      <div
+        className="snake-container-inner"
+        style={{ color: theme.textPrimary }}
+      >
+        {showSnake ? (
+          <div
+            className={`${snakeFlash ? "play-snake snake-flash" : "play-snake"}`}
+          >
+            <div
+              className="play-snake-score-container"
+              style={{
+                background: theme.elevated,
+                border: `2px solid ${theme.border}`,
+              }}
+            >
+              <div className="play-snake-choices">
+                <button
+                  className="play-snake-pause-btn"
+                  style={{
+                    background: theme.elevated,
+                    border: `2px solid ${theme.border}`,
+                  }}
+                  onClick={() => {
+                    if (snakeFlash) return;
+                    setIsPaused((prev) => !prev);
+                  }}
+                >
+                  {isPaused ? "Resume" : "Pause"}
+                </button>
+                <button
+                  className="play-snake-reset-btn"
+                  style={{
+                    background: theme.elevated,
+                    border: `2px solid ${theme.border}`,
+                  }}
+                  onClick={() => {
+                    resetGame();
+                  }}
+                >
+                  Restart
+                </button>
+                {username ? (
+                  <div>
+                    <button
+                      className="play-snake-user-stats"
+                      style={{
+                        background: theme.elevated,
+                        border: `2px solid ${theme.border}`,
+                      }}
+                    >
+                      See Stats
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <button
+                      className="play-snake-user-login"
+                      style={{
+                        background: theme.elevated,
+                        border: `2px solid ${theme.border}`,
+                      }}
+                    >
+                      Login
+                    </button>
+                  </div>
+                )}
+              </div>
+              <div className={`play-snake-score ${scorePop ? "pop" : ""}`}>
+                <img
+                  src="/apple.png"
+                  alt="apple"
+                  className="play-snake-score-img"
+                />
+                <h3>{userScore}</h3>
+              </div>
+            </div>
+            <div
+              className={`${snakeShake ? "play-snake-arena-container snake-shake" : "play-snake-arena-container"}`}
+              style={{
+                border: `2px solid ${theme.border}`,
+                background: theme.elevated,
+              }}
+            >
+              {snake.map(([x, y], i) => (
+                <div
+                  key={i}
+                  className="snake"
+                  style={{
+                    gridColumn: x + 1,
+                    gridRow: y + 1,
+                  }}
+                />
+              ))}
+              {isPaused && <h3 className="snake-paused">Paused</h3>}
+              {snakeFlash && <h3 className="snake-gameover">Game Over</h3>}
+              <img
+                src="/apple.png"
+                alt="apple"
+                className={`apple ${running && !isPaused ? "apple-running" : ""}`}
+                style={{
+                  gridColumn: apple[0] + 1,
+                  gridRow: apple[1] + 1,
+                }}
+              />
+            </div>
+          </div>
+        ) : showStats ? (
+          <div>Stats Coming Soon</div>
+        ) : (
+          <div
+            className="start-snake"
+            style={{
+              backgroundImage: "url(/grass-land.gif)",
+            }}
+          >
+            <button
+              className="start-snake-btn"
+              onClick={() => {
+                setShowSnake(true);
+              }}
+            >
+              Play
+            </button>
+            <button
+              className="start-snake-btn"
+              onClick={() => {
+                setShowSnake(false);
+                setShowStats(true);
+              }}
+            >
+              Stats
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 export default PlaySnake;

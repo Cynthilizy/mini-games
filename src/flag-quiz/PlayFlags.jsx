@@ -3,6 +3,7 @@ import "./Playflags.css";
 import { typography } from "../typography";
 import Clock from "../assets/clock.svg?react";
 import { code } from "country-emoji";
+import confetti from "canvas-confetti";
 
 function PlayFlags({ flags, theme, showFlag, setShowFlag }) {
   const [showStats, setShowStats] = useState(false);
@@ -14,6 +15,7 @@ function PlayFlags({ flags, theme, showFlag, setShowFlag }) {
   const [showFail, setShowFail] = useState(false);
   const [timeLeft, setTimeLeft] = useState(60);
   const [timerRunning, setTimerRunning] = useState(true);
+  const [flash, setFlash] = useState(false);
 
   const shuffle = () => {
     const randomNum = Math.random();
@@ -37,7 +39,13 @@ function PlayFlags({ flags, theme, showFlag, setShowFlag }) {
       setTimerRunning(false);
       setScore((prev) => prev + 1);
       setShowCorrect(true);
-
+      requestAnimationFrame(() => {
+        confetti({
+          particleCount: 200,
+          spread: 100,
+          origin: { y: 0.6 },
+        });
+      });
       setTimeout(() => {
         let result = shuffle();
         if (random === null) {
@@ -57,6 +65,8 @@ function PlayFlags({ flags, theme, showFlag, setShowFlag }) {
       }, 2000);
     } else {
       setShowFail(true);
+      setFlash(true);
+      setTimeout(() => setFlash(false), 300);
       setTimerRunning(false);
     }
   };
@@ -128,7 +138,7 @@ function PlayFlags({ flags, theme, showFlag, setShowFlag }) {
         )}
 
         {showFlag ? (
-          <div className="play-flag">
+          <div className={`${flash ? "play-flag flash-flag" : "play-flag"}`}>
             <div
               className="play-flag-score-container"
               style={{
