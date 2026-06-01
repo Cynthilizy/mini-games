@@ -242,6 +242,22 @@
   flex-shrink: 0;
 }
 
+.flash-capital {
+  animation: flash-capital 0.3s ease;
+}
+
+@keyframes flash-capital {
+  0% {
+    background: transparent;
+  }
+  50% {
+    background: rgba(255, 0, 0, 0.15);
+  }
+  100% {
+    background: transparent;
+  }
+}
+
 @media (max-width: 500px) {
   .play-capital-choices {
     flex-direction: column;

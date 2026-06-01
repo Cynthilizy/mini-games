@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "./PlayCapitals.css";
 import { typography } from "../typography";
 import Clock from "../assets/clock.svg?react";
+import confetti from "canvas-confetti";
 
 function PlayCapitals({ capitals, theme, showCapital, setShowCapital }) {
   const [showStats, setShowStats] = useState(false);
@@ -13,6 +14,7 @@ function PlayCapitals({ capitals, theme, showCapital, setShowCapital }) {
   const [showFail, setShowFail] = useState(false);
   const [timeLeft, setTimeLeft] = useState(60);
   const [timerRunning, setTimerRunning] = useState(true);
+  const [flash, setFlash] = useState(false);
 
   const shuffle = () => {
     const randomNum = Math.random();
@@ -33,7 +35,13 @@ function PlayCapitals({ capitals, theme, showCapital, setShowCapital }) {
       setTimerRunning(false);
       setScore((prev) => prev + 1);
       setShowCorrect(true);
-
+      requestAnimationFrame(() => {
+        confetti({
+          particleCount: 200,
+          spread: 100,
+          origin: { y: 0.6 },
+        });
+      });
       setTimeout(() => {
         let result = shuffle();
         if (random === null) {
@@ -53,6 +61,8 @@ function PlayCapitals({ capitals, theme, showCapital, setShowCapital }) {
       }, 2000);
     } else {
       setShowFail(true);
+      setFlash(true);
+      setTimeout(() => setFlash(false), 300);
       setTimerRunning(false);
     }
   };
@@ -81,7 +91,7 @@ function PlayCapitals({ capitals, theme, showCapital, setShowCapital }) {
   return (
     <div className="capital-container">
       <div
-        className="capital-container-inner"
+        className={`${flash ? "capital-container-inner flash-capital" : "capital-container-inner"}`}
         style={{ color: theme.textPrimary }}
       >
         {showCapital && (

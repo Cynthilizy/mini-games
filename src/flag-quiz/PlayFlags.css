@@ -255,6 +255,22 @@
   flex-shrink: 0;
 }
 
+.flash-flag {
+  animation: flash-flag 0.3s ease;
+}
+
+@keyframes flash-flag {
+  0% {
+    background: transparent;
+  }
+  50% {
+    background: rgba(255, 0, 0, 0.15);
+  }
+  100% {
+    background: transparent;
+  }
+}
+
 @media (max-width: 500px) {
   .play-flag-choices {
     flex-direction: column;

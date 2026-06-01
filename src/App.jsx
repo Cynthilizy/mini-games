@@ -16,6 +16,8 @@ function App() {
   const [mode, setMode] = useState("dark");
   const [showCapital, setShowCapital] = useState(false);
   const [showFlag, setShowFlag] = useState(false);
+  const [showRps, setShowRps] = useState(false);
+  const [showSnake, setShowSnake] = useState(false);
 
   const theme = colors[mode];
 
@@ -50,6 +52,8 @@ function App() {
   const handleReset = () => {
     setShowCapital(false);
     setShowFlag(false);
+    setShowRps(false);
+    setShowSnake(false);
   };
 
   return (
@@ -90,10 +94,25 @@ function App() {
               />
             }
           ></Route>
-          <Route path="/play-rps" element={<PlayRPS theme={theme} />}></Route>
+          <Route
+            path="/play-rps"
+            element={
+              <PlayRPS
+                theme={theme}
+                showRps={showRps}
+                setShowRps={setShowRps}
+              />
+            }
+          ></Route>
           <Route
             path="/play-snake"
-            element={<PlaySnake theme={theme} />}
+            element={
+              <PlaySnake
+                theme={theme}
+                showSnake={showSnake}
+                setShowSnake={setShowSnake}
+              />
+            }
           ></Route>
         </Routes>
       </main>
