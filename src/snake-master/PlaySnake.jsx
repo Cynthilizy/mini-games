@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
+import clsx from "clsx";
 import "./PlaySnake.css";
 
 function PlaySnake({ theme, showSnake, setShowSnake }) {
@@ -13,6 +14,7 @@ function PlaySnake({ theme, showSnake, setShowSnake }) {
   const [snakeFlash, setSnakeFlash] = useState(false);
   const [snakeShake, setSnakeShake] = useState(false);
   const [scorePop, setScorePop] = useState(false);
+  const [speed, setSpeed] = useState(500);
 
   const directionRef = useRef("RIGHT");
   const nextDirectionRef = useRef("RIGHT");
@@ -62,6 +64,7 @@ function PlaySnake({ theme, showSnake, setShowSnake }) {
 
   const handleDirection = (newDir) => {
     nextDirectionRef.current = newDir;
+    setDirection(newDir);
   };
 
   const syncSnake = (newSnake) => {
@@ -71,6 +74,7 @@ function PlaySnake({ theme, showSnake, setShowSnake }) {
 
   const moveSnake = () => {
     directionRef.current = nextDirectionRef.current;
+    setDirection(directionRef.current);
 
     const prevSnake = snakeRef.current;
     const head = prevSnake[0];
@@ -112,9 +116,15 @@ function PlaySnake({ theme, showSnake, setShowSnake }) {
     }
 
     if (ateApple) {
-      setUserScore((s) => s + 1);
+      setUserScore((s) => {
+        const newScore = s + 1;
+        const newSpeed = Math.max(100, 500 - newScore * 20);
+        setSpeed(newSpeed);
+        return newScore;
+      });
       setScorePop(true);
       setTimeout(() => setScorePop(false), 200);
+
       const nextApple = spawnApple(nextSnake);
       appleRef.current = nextApple;
       setApple(nextApple);
@@ -157,10 +167,27 @@ function PlaySnake({ theme, showSnake, setShowSnake }) {
   useEffect(() => {
     if (!running || isPaused || snakeFlash) return;
 
-    const interval = setInterval(moveSnake, 1000);
+    const interval = setInterval(moveSnake, speed);
 
     return () => clearInterval(interval);
   }, [running, isPaused, snakeFlash]);
+
+  const getDirection = (i) => {
+    const prev = snake[i - 1] || snake[i];
+    const curr = snake[i];
+    return [curr[0] - prev[0], curr[1] - prev[1]];
+  };
+
+  const getAngleFromDirection = (dir) => {
+    const map = {
+      RIGHT: 0,
+      DOWN: 90,
+      LEFT: 180,
+      UP: -90,
+    };
+
+    return map[dir] || 0;
+  };
 
   return (
     <div className="snake-container">
@@ -183,8 +210,9 @@ function PlaySnake({ theme, showSnake, setShowSnake }) {
                 <button
                   className="play-snake-pause-btn"
                   style={{
-                    background: theme.elevated,
+                    background: snakeFlash ? theme.muted : theme.elevated,
                     border: `2px solid ${theme.border}`,
+                    cursor: snakeFlash ? "not-allowed" : "pointer",
                   }}
                   onClick={() => {
                     if (snakeFlash) return;
@@ -247,16 +275,39 @@ function PlaySnake({ theme, showSnake, setShowSnake }) {
                 background: theme.elevated,
               }}
             >
-              {snake.map(([x, y], i) => (
-                <div
-                  key={i}
-                  className="snake"
-                  style={{
-                    gridColumn: x + 1,
-                    gridRow: y + 1,
-                  }}
-                />
-              ))}
+              {snake.map(([x, y], i) => {
+                const isHead = i === 0;
+                const isTail = i === snake.length - 1;
+
+                const [dx, dy] = getDirection(i);
+                const angle = Math.atan2(dy, dx);
+
+                const headAngle = getAngleFromDirection(direction);
+
+                return (
+                  <div
+                    key={i}
+                    className={`snake-segment ${isHead ? "head" : ""} ${
+                      isTail ? "tail" : ""
+                    }`}
+                    style={{
+                      gridColumn: x + 1,
+                      gridRow: y + 1,
+                      transform: `rotate(${
+                        isHead ? headAngle : angle * (180 / Math.PI)
+                      }deg)`,
+                    }}
+                  >
+                    {isHead && (
+                      <>
+                        <div className="eye left-eye" />
+                        <div className="eye right-eye" />
+                        <div className="tongue" />
+                      </>
+                    )}
+                  </div>
+                );
+              })}
               {isPaused && <h3 className="snake-paused">Paused</h3>}
               {snakeFlash && <h3 className="snake-gameover">Game Over</h3>}
               <img

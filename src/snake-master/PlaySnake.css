@@ -104,9 +104,54 @@
   height: 60vh;
 }
 
-.snake {
-  background: limegreen;
-  border-radius: 4px;
+.snake-segment {
+  width: 100%;
+  height: 100%;
+  border-radius: 40%;
+  background: linear-gradient(145deg, #36d46a, #1f8f45);
+  position: relative;
+  transition:
+    transform 120ms linear,
+    left 120ms linear,
+    top 120ms linear;
+}
+
+.snake-segment.head {
+  border-radius: 45%;
+}
+
+.eye {
+  position: absolute;
+  width: 16%;
+  height: 16%;
+  border-radius: 50%;
+  background: red;
+}
+
+.left-eye {
+  top: 22%;
+  right: 28%;
+}
+
+.right-eye {
+  bottom: 22%;
+  right: 28%;
+}
+
+.tongue {
+  position: absolute;
+  right: -15%;
+  top: 50%;
+  width: 28%;
+  height: 12%;
+  background: red;
+  transform: translateY(-50%);
+  border-radius: 30%;
+}
+
+.snake-segment.tail {
+  transform: scale(0.82);
+  border-radius: 60%;
 }
 
 .apple {
