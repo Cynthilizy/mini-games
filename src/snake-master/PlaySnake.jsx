@@ -1,10 +1,9 @@
-import { useState, useEffect, useRef } from "react";
-import clsx from "clsx";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import "./PlaySnake.css";
 
 function PlaySnake({ theme, showSnake, setShowSnake }) {
   const [showStats, setShowStats] = useState(false);
-  const [snake, setSnake] = useState([[5, 5]]);
+  const [snake, setSnake] = useState([[7, 7]]);
   const [direction, setDirection] = useState("RIGHT");
   const [apple, setApple] = useState([10, 8]);
   const [userScore, setUserScore] = useState(0);
@@ -19,14 +18,94 @@ function PlaySnake({ theme, showSnake, setShowSnake }) {
   const directionRef = useRef("RIGHT");
   const nextDirectionRef = useRef("RIGHT");
   const appleRef = useRef([10, 8]);
-  const snakeRef = useRef([[5, 5]]);
+  const snakeRef = useRef([[7, 7]]);
 
   const GRID_SIZE = 20;
+
+  const shiftUp = (shape, amount = 1) => shape.map(([x, y]) => [x, y - amount]);
+
+  const shiftDown = (shape, amount = 1) =>
+    shape.map(([x, y]) => [x, y + amount]);
+
+  const shiftLeft = (shape, amount = 1) =>
+    shape.map(([x, y]) => [x - amount, y]);
+
+  const shiftRight = (shape, amount = 1) =>
+    shape.map(([x, y]) => [x + amount, y]);
+
+  const TShape = (x, y) => [
+    [x - 2, y],
+    [x - 1, y],
+    [x, y],
+    [x + 1, y],
+    [x + 2, y],
+
+    [x, y + 1],
+    [x, y + 2],
+    [x, y + 3],
+  ];
+  const TUpsideDown = (x, y) => [
+    [x - 2, y],
+    [x - 1, y],
+    [x, y],
+    [x + 1, y],
+    [x + 2, y],
+
+    [x, y - 1],
+    [x, y - 2],
+    [x, y - 3],
+  ];
+
+  const LShape = (x, y) => [
+    [x, y],
+    [x, y + 1],
+    [x, y + 2],
+    [x, y + 3],
+    [x, y + 4],
+
+    [x + 1, y + 4],
+    [x + 2, y + 4],
+  ];
+
+  const LUpsideDown = (x, y) => [
+    [x, y],
+    [x, y - 1],
+    [x, y - 2],
+    [x, y - 3],
+    [x, y - 4],
+
+    [x - 1, y - 4],
+    [x - 2, y - 4],
+  ];
+
+  const VerticalLeft = (x, y, len = 6) =>
+    Array.from({ length: len }, (_, i) => [x - 2, y + i]);
+
+  const HorizontalLine = (x, y, len = 5) =>
+    Array.from({ length: len }, (_, i) => [x + i, y]);
+
+  const createWalls = () => [
+    ...shiftUp(TShape(6, 4), 2),
+    ...TUpsideDown(14, 6),
+
+    ...LShape(7, 14),
+    ...LUpsideDown(14, 16),
+
+    ...VerticalLeft(5, 8, 6),
+    ...shiftUp(HorizontalLine(10, 10, 5), 1),
+  ];
+
+  const inBounds = ([x, y]) =>
+    x > 0 && y > 0 && x < GRID_SIZE - 1 && y < GRID_SIZE - 1;
+
+  const walls = useMemo(() => createWalls().filter(inBounds), []);
+
+  const isWall = (x, y) => walls.some(([wx, wy]) => wx === x && wy === y);
 
   const resetGame = () => {
     setRunning(false); // STOP LOOP FIRST
 
-    const INITIAL_SNAKE = [[5, 5]];
+    const INITIAL_SNAKE = [[7, 7]];
     const INITIAL_DIR = "RIGHT";
     const INITIAL_APPLE = [10, 8];
 
@@ -41,6 +120,7 @@ function PlaySnake({ theme, showSnake, setShowSnake }) {
     setUserScore(0);
     setIsPaused(false);
     setSnakeFlash(false);
+    setSpeed(500);
 
     setTimeout(() => {
       setRunning(true);
@@ -56,7 +136,8 @@ function PlaySnake({ theme, showSnake, setShowSnake }) {
         Math.floor(Math.random() * GRID_SIZE),
       ];
     } while (
-      snake.some((seg) => seg[0] === newApple[0] && seg[1] === newApple[1])
+      snake.some((seg) => seg[0] === newApple[0] && seg[1] === newApple[1]) ||
+      walls.some((w) => w[0] === newApple[0] && w[1] === newApple[1])
     );
 
     return newApple;
@@ -93,6 +174,18 @@ function PlaySnake({ theme, showSnake, setShowSnake }) {
     if (newY < 0) newY = GRID_SIZE - 1;
 
     const newHead = [newX, newY];
+
+    if (isWall(newX, newY)) {
+      setRunning(false);
+      setSnakeFlash(true);
+      setSnakeShake(true);
+
+      setTimeout(() => {
+        setSnakeShake(false);
+      }, 300);
+
+      return;
+    }
 
     const [appleX, appleY] = appleRef.current;
     const ateApple = newX === appleX && newY === appleY;
@@ -137,8 +230,16 @@ function PlaySnake({ theme, showSnake, setShowSnake }) {
     appleRef.current = apple;
   }, [apple]);
 
-  useEffect(() => {
-    const handleKey = (e) => {
+  const handleKey = useCallback(
+    (e) => {
+      if (snakeFlash) return;
+
+      if (e.code === "Space") {
+        e.preventDefault();
+        setIsPaused((p) => !p);
+        return;
+      }
+
       const keyMap = {
         ArrowUp: "UP",
         ArrowDown: "DOWN",
@@ -157,12 +258,16 @@ function PlaySnake({ theme, showSnake, setShowSnake }) {
       };
 
       if (directionRef.current === opposite[newDir]) return;
-      handleDirection(newDir);
-    };
 
-    window.addEventListener("keydown", handleKey);
+      handleDirection(newDir);
+    },
+    [snakeFlash],
+  );
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKey, { passive: false });
     return () => window.removeEventListener("keydown", handleKey);
-  }, []);
+  }, [handleKey]);
 
   useEffect(() => {
     if (!running || isPaused || snakeFlash) return;
@@ -310,6 +415,17 @@ function PlaySnake({ theme, showSnake, setShowSnake }) {
               })}
               {isPaused && <h3 className="snake-paused">Paused</h3>}
               {snakeFlash && <h3 className="snake-gameover">Game Over</h3>}
+              {walls.map(([x, y], i) => (
+                <img
+                  key={`wall-${i}`}
+                  src="/wall.jpg"
+                  className="wall"
+                  style={{
+                    gridColumn: x + 1,
+                    gridRow: y + 1,
+                  }}
+                />
+              ))}
               <img
                 src="/apple.png"
                 alt="apple"
