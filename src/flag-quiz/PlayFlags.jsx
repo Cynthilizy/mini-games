@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "./Playflags.css";
+import "./PlayFlags.css";
 import { typography } from "../typography";
 import Clock from "../assets/clock.svg?react";
 import { code } from "country-emoji";
