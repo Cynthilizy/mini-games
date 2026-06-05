@@ -14,6 +14,19 @@
 .game-choices {
   display: flex;
   flex-direction: row;
-  gap: 20px;
+  justify-content: space-evenly;
   flex-wrap: wrap;
+}
+
+@media (width<1015px) {
+  .game-choices {
+    gap: 15px;
+  }
+}
+
+@media (width<640px) {
+  .game-choices {
+    flex-direction: column;
+    align-items: center;
+  }
 }

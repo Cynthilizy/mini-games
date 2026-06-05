@@ -138,123 +138,134 @@ function PlayFlags({ flags, theme, showFlag, setShowFlag }) {
         )}
 
         {showFlag ? (
-          <div className={`${flash ? "play-flag flash-flag" : "play-flag"}`}>
-            <div
-              className="play-flag-score-container"
-              style={{
-                background: theme.elevated,
-                border: `2px solid ${theme.border}`,
-              }}
-            >
-              <h3 className="play-flag-score-title">Score</h3>
-              <p className="play-flag-score">{score}</p>
-            </div>
-            <div className="play-flag-question-container">
-              <div className="flag-img">
-                <img
-                  src={`https://flagcdn.com/w320/${random.flag}.png`}
-                  alt={`Flag of ${random.country}`}
-                />
+          <div className="play-flag-wrapper">
+            <div className={`${flash ? "play-flag flash-flag" : "play-flag"}`}>
+              <div
+                className="play-flag-score-container"
+                style={{
+                  background: theme.elevated,
+                  border: `2px solid ${theme.border}`,
+                }}
+              >
+                <h3 className="play-flag-score-title">Score</h3>
+                <p className="play-flag-score">{score}</p>
               </div>
+              <div className="play-flag-question-container">
+                <div className="flag-img">
+                  <img
+                    src={`https://flagcdn.com/w320/${random.flag}.png`}
+                    alt={`Flag of ${random.country}`}
+                  />
+                </div>
 
-              <div className="play-flag-choices">
-                <button
-                  className="play-flag-reset-btn"
-                  style={{
-                    background: theme.elevated,
-                    border: `2px solid ${theme.border}`,
-                  }}
-                  onClick={() => {
-                    let result = shuffle();
-                    if (random === null) {
-                      setRandom(result);
-                    } else if (random?.id === result?.id) {
-                      do {
-                        result = shuffle();
+                <div className="play-flag-choices">
+                  <button
+                    className="play-flag-reset-btn"
+                    style={{
+                      background: theme.elevated,
+                      border: `2px solid ${theme.border}`,
+                    }}
+                    onClick={() => {
+                      let result = shuffle();
+                      if (random === null) {
                         setRandom(result);
-                      } while (result?.id === random?.id);
-                    } else {
-                      setRandom(result);
-                    }
-                    setAnswer("");
-                    setShowFail(false);
-                    setShowStats(false);
-                    setScore(0);
-                    setTimeLeft(60);
-                    setTimerRunning(true);
-                  }}
-                >
-                  Restart
-                </button>
-                <input
-                  className="play-flag-answer"
-                  type="text"
-                  value={answer}
-                  onChange={handleAnswerChange}
-                  placeholder="Type here..."
-                  style={{
-                    background: theme.elevated,
-                    border: `2px solid ${theme.border}`,
-                  }}
-                />
-                <button
-                  className="play-flag-submit-btn"
-                  style={{
-                    background: theme.elevated,
-                    border: `2px solid ${theme.border}`,
-                  }}
-                  disabled={showCorrect || showFail || !answer}
-                  onClick={() => {
-                    checkSubmit();
-                  }}
-                >
-                  Submit
-                </button>
+                      } else if (random?.id === result?.id) {
+                        do {
+                          result = shuffle();
+                          setRandom(result);
+                        } while (result?.id === random?.id);
+                      } else {
+                        setRandom(result);
+                      }
+                      setAnswer("");
+                      setShowFail(false);
+                      setShowStats(false);
+                      setScore(0);
+                      setTimeLeft(60);
+                      setTimerRunning(true);
+                    }}
+                  >
+                    Restart
+                  </button>
+                  <input
+                    className="play-flag-answer"
+                    type="text"
+                    value={answer}
+                    onChange={handleAnswerChange}
+                    placeholder="Type here..."
+                    style={{
+                      background: theme.elevated,
+                      border: `2px solid ${theme.border}`,
+                    }}
+                  />
+                  <button
+                    className="play-flag-submit-btn"
+                    style={{
+                      background: theme.elevated,
+                      border: `2px solid ${theme.border}`,
+                    }}
+                    disabled={showCorrect || showFail || !answer}
+                    onClick={() => {
+                      checkSubmit();
+                    }}
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+              <div
+                className="play-flag-user-board"
+                style={{
+                  background: theme.elevated,
+                  border: `2px solid ${theme.border}`,
+                }}
+              >
+                {username ? (
+                  <div>
+                    <div>
+                      <p style={{ fontSize: typography.size.xs }}>
+                        Welcome Back
+                      </p>
+                      <p className="play-flag-username">{username}</p>
+                    </div>
+                    <button
+                      className="play-flag-user-stats"
+                      style={{
+                        background: theme.elevated,
+                        border: `2px solid ${theme.border}`,
+                      }}
+                    >
+                      See Stats
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <div>
+                      <p style={{ fontSize: typography.size.xs }}>
+                        To see stats and
+                        <br />
+                        save progress
+                      </p>
+                    </div>
+                    <button
+                      className="play-flag-user-login"
+                      style={{
+                        background: theme.elevated,
+                        border: `2px solid ${theme.border}`,
+                      }}
+                    >
+                      Login
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
-            <div
-              className="play-flag-user-board"
-              style={{
-                background: theme.elevated,
-                border: `2px solid ${theme.border}`,
-              }}
-            >
-              {username ? (
-                <div>
-                  <div>
-                    <p style={{ fontSize: typography.size.xs }}>Welcome Back</p>
-                    <p className="play-flag-username">{username}</p>
-                  </div>
-                  <button
-                    className="play-flag-user-stats"
-                    style={{
-                      background: theme.elevated,
-                      border: `2px solid ${theme.border}`,
-                    }}
-                  >
-                    See Stats
-                  </button>
-                </div>
-              ) : (
-                <div>
-                  <div>
-                    <p style={{ fontSize: typography.size.xs }}>
-                      To see stats and
-                      <br />
-                      save progress
-                    </p>
-                  </div>
-                  <button
-                    className="play-flag-user-login"
-                    style={{
-                      background: theme.elevated,
-                      border: `2px solid ${theme.border}`,
-                    }}
-                  >
-                    Login
-                  </button>
-                </div>
-              )}
+            <div className="screen-error-flag">
+              <h3 className="screen-error-flag-title">
+                This Game Requires More Space
+              </h3>
+              <img src="/fail.gif" className="screen-error-flag-icon" />
+              <h3 className="screen-error-flag-text">Screen Size Too Small</h3>
             </div>
           </div>
         ) : showStats ? (

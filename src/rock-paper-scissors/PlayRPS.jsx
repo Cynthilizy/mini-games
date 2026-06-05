@@ -179,174 +179,176 @@ function PlayRPS({ theme, showRps, setShowRps }) {
           </div>
         )}
         {showRps ? (
-          <div className="play-rps">
-            <div
-              className="play-rps-user-container"
-              style={{
-                background: theme.elevated,
-                border: `2px solid ${theme.border}`,
-              }}
-            >
-              <h3 className="play-rps-user-name">
-                {!username ? "You" : username}
-              </h3>
-              <div className="play-rps-user-choices">
-                <button
-                  className={`
+          <div className="play-rps-wrapper">
+            <div className="play-rps">
+              <div
+                className="play-rps-user-container"
+                style={{
+                  background: theme.elevated,
+                  border: `2px solid ${theme.border}`,
+                }}
+              >
+                <h3 className="play-rps-user-name">
+                  {!username ? "You" : username}
+                </h3>
+                <div className="play-rps-user-choices">
+                  <button
+                    className={`
                   rps-img-user
                   ${userChoice === "R" ? "selected" : ""}
                 `}
-                  onClick={() => {
-                    setUserChoice("R");
-                    userRef.current = "R";
-                  }}
-                >
-                  <img src="/rock.jpg" alt="rock" />
-                </button>
+                    onClick={() => {
+                      setUserChoice("R");
+                      userRef.current = "R";
+                    }}
+                  >
+                    <img src="/rock.jpg" alt="rock" />
+                  </button>
 
-                <button
-                  className={`
+                  <button
+                    className={`
                   rps-img-user
                   ${userChoice === "P" ? "selected" : ""}
                 `}
-                  onClick={() => {
-                    setUserChoice("P");
-                    userRef.current = "P";
-                  }}
-                >
-                  <img src="/paper.jpg" alt="paper" />
-                </button>
+                    onClick={() => {
+                      setUserChoice("P");
+                      userRef.current = "P";
+                    }}
+                  >
+                    <img src="/paper.jpg" alt="paper" />
+                  </button>
 
-                <button
-                  className={`
+                  <button
+                    className={`
                   rps-img-user
                   ${userChoice === "S" ? "selected" : ""}
                 `}
-                  onClick={() => {
-                    setUserChoice("S");
-                    userRef.current = "S";
-                  }}
-                >
-                  <img src="/scissors.jpg" alt="scissors" />
-                </button>
+                    onClick={() => {
+                      setUserChoice("S");
+                      userRef.current = "S";
+                    }}
+                  >
+                    <img src="/scissors.jpg" alt="scissors" />
+                  </button>
+                </div>
+                <p className="rps-choice-title">
+                  {!userChoice
+                    ? "Select a choice"
+                    : userChoice === "R"
+                      ? "Rock"
+                      : userChoice === "P"
+                        ? "Paper"
+                        : "Scissors"}
+                </p>
               </div>
-              <p className="rps-choice-title">
-                {!userChoice
-                  ? "Select a choice"
-                  : userChoice === "R"
-                    ? "Rock"
-                    : userChoice === "P"
-                      ? "Paper"
-                      : "Scissors"}
-              </p>
-            </div>
-            <div className="play-rps-score-container">
-              <h3 className="play-rps-score">Score</h3>
-              <div className="play-rps-score-result">
-                <h3>{userScore}</h3>
-                <h3>:</h3>
-                <h3>{computerScore}</h3>
+              <div className="play-rps-score-container">
+                <h3 className="play-rps-score">Score</h3>
+                <div className="play-rps-score-result">
+                  <h3>{userScore}</h3>
+                  <h3>:</h3>
+                  <h3>{computerScore}</h3>
+                </div>
               </div>
-              <div className="play-rps-choices">
-                <button
-                  className="play-rps-pause-btn"
-                  style={{
-                    background: theme.elevated,
-                    border: `2px solid ${theme.border}`,
-                  }}
-                  onClick={() => setIsPaused((prev) => !prev)}
-                >
-                  {isPaused ? "Resume" : "Pause"}
-                </button>
-                <button
-                  className="play-rps-reset-btn"
-                  style={{
-                    background: theme.elevated,
-                    border: `2px solid ${theme.border}`,
-                  }}
-                  onClick={() => {
-                    setUserScore(0);
-                    setComputerScore(0);
-                    resetRound();
-                    setIsPaused(false);
-                  }}
-                >
-                  Restart
-                </button>
-                {username ? (
-                  <div>
-                    <button
-                      className="play-rps-user-stats"
-                      style={{
-                        background: theme.elevated,
-                        border: `2px solid ${theme.border}`,
-                      }}
-                    >
-                      See Stats
-                    </button>
-                  </div>
-                ) : (
-                  <div>
-                    <button
-                      className="play-rps-user-login"
-                      style={{
-                        background: theme.elevated,
-                        border: `2px solid ${theme.border}`,
-                      }}
-                    >
-                      Login
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-            <div
-              className="play-rps-computer-container"
-              style={{
-                background: theme.elevated,
-                border: `2px solid ${theme.border}`,
-              }}
-            >
-              <h3 className="play-rps-computer-name">Computer</h3>
-              <div className="play-rps-computer-choices">
-                <button
-                  className={`
+              <div
+                className="play-rps-computer-container"
+                style={{
+                  background: theme.elevated,
+                  border: `2px solid ${theme.border}`,
+                }}
+              >
+                <h3 className="play-rps-computer-name">Computer</h3>
+                <div className="play-rps-computer-choices">
+                  <button
+                    className={`
                   rps-img-computer
                   ${roundEnded && computerChoice === "R" ? "selected" : ""}
                 `}
-                >
-                  <img src="/rock.jpg" alt="rock" />
-                </button>
+                  >
+                    <img src="/rock.jpg" alt="rock" />
+                  </button>
 
-                <button
-                  className={`
+                  <button
+                    className={`
                   rps-img-computer
                   ${roundEnded && computerChoice === "P" ? "selected" : ""}
                 `}
-                >
-                  <img src="/paper.jpg" alt="paper" />
-                </button>
+                  >
+                    <img src="/paper.jpg" alt="paper" />
+                  </button>
 
-                <button
-                  className={`
+                  <button
+                    className={`
                   rps-img-computer
                   ${roundEnded && computerChoice === "S" ? "selected" : ""}
                 `}
-                >
-                  <img src="/scissors.jpg" alt="scissors" />
-                </button>
+                  >
+                    <img src="/scissors.jpg" alt="scissors" />
+                  </button>
+                </div>
+                <p className="rps-choice-title">
+                  {timeLeft > 0
+                    ? "Computer Thinking..."
+                    : !computerChoice
+                      ? "Select a choice"
+                      : computerChoice === "R"
+                        ? "Rock"
+                        : computerChoice === "P"
+                          ? "Paper"
+                          : "Scissors"}
+                </p>
               </div>
-              <p className="rps-choice-title">
-                {timeLeft > 0
-                  ? "Computer Thinking..."
-                  : !computerChoice
-                    ? "Select a choice"
-                    : computerChoice === "R"
-                      ? "Rock"
-                      : computerChoice === "P"
-                        ? "Paper"
-                        : "Scissors"}
-              </p>
+            </div>
+            <div className="play-rps-choices">
+              <button
+                className="play-rps-pause-btn"
+                style={{
+                  background: theme.elevated,
+                  border: `2px solid ${theme.border}`,
+                }}
+                onClick={() => setIsPaused((prev) => !prev)}
+              >
+                {isPaused ? "Resume" : "Pause"}
+              </button>
+              <button
+                className="play-rps-reset-btn"
+                style={{
+                  background: theme.elevated,
+                  border: `2px solid ${theme.border}`,
+                }}
+                onClick={() => {
+                  setUserScore(0);
+                  setComputerScore(0);
+                  resetRound();
+                  setIsPaused(false);
+                }}
+              >
+                Restart
+              </button>
+              {username ? (
+                <div>
+                  <button
+                    className="play-rps-user-stats"
+                    style={{
+                      background: theme.elevated,
+                      border: `2px solid ${theme.border}`,
+                    }}
+                  >
+                    See Stats
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <button
+                    className="play-rps-user-login"
+                    style={{
+                      background: theme.elevated,
+                      border: `2px solid ${theme.border}`,
+                    }}
+                  >
+                    Login
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         ) : showStats ? (

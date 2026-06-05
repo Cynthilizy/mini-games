@@ -106,182 +106,195 @@ function PlayCapitals({ capitals, theme, showCapital, setShowCapital }) {
           </div>
         )}
         {showCapital ? (
-          <div className="play-capital">
-            <div
-              className="play-capital-score-container"
-              style={{
-                background: theme.elevated,
-                border: `2px solid ${theme.border}`,
-              }}
-            >
-              <h3 className="play-capital-score-title">Score</h3>
-              <p className="play-capital-score">{score}</p>
-            </div>
-            <div className="play-capital-question-container">
-              {!showCorrect && !showFail && (
-                <div>
-                  <h3 className="play-capital-question">
-                    What is the capital of {random?.country}
-                  </h3>
-                  <input
-                    className="play-capital-answer"
-                    type="text"
-                    value={answer}
-                    onChange={handleAnswerChange}
-                    placeholder="Type here..."
-                    style={{
-                      background: theme.elevated,
-                      border: `2px solid ${theme.border}`,
-                    }}
-                  />
-                </div>
-              )}
-              {showCorrect && (
-                <div>
-                  <h3 className="play-capital-question">
-                    <img
-                      src="/check.gif"
-                      alt="Correct"
-                      className="capital-pass-img"
-                    />{" "}
-                    Correct{" "}
-                    <img
-                      src="/check.gif"
-                      alt="Correct"
-                      className="capital-pass-img"
+          <div>
+            <div className="play-capital">
+              <div
+                className="play-capital-score-container"
+                style={{
+                  background: theme.elevated,
+                  border: `2px solid ${theme.border}`,
+                }}
+              >
+                <h3 className="play-capital-score-title">Score</h3>
+                <p className="play-capital-score">{score}</p>
+              </div>
+              <div className="play-capital-question-container">
+                {!showCorrect && !showFail && (
+                  <div className="play-capital-question-wrapper">
+                    <h3 className="play-capital-question">
+                      What is the capital of {random?.country}
+                    </h3>
+                    <input
+                      className="play-capital-answer"
+                      type="text"
+                      value={answer}
+                      onChange={handleAnswerChange}
+                      placeholder="Type here..."
+                      style={{
+                        background: theme.elevated,
+                        border: `2px solid ${theme.border}`,
+                      }}
                     />
-                  </h3>
-                  <input
-                    className="play-capital-answer"
-                    type="text"
-                    value={answer}
-                    onChange={handleAnswerChange}
-                    placeholder="Type here..."
-                    style={{
-                      background: theme.elevated,
-                      border: `2px solid ${theme.border}`,
-                    }}
-                  />
-                </div>
-              )}
-              {showFail && (
-                <div>
-                  <h3 className="play-capital-question">
-                    <img
-                      src="/fail.gif"
-                      alt="Wrong"
-                      className="capital-fail-img"
-                    />{" "}
-                    Capital of <span>{random.country}</span> is{" "}
-                    <span>
-                      {random.capital}{" "}
+                  </div>
+                )}
+                {showCorrect && (
+                  <div>
+                    <h3 className="play-capital-question">
+                      <img
+                        src="/check.gif"
+                        alt="Correct"
+                        className="capital-pass-img"
+                      />{" "}
+                      Correct{" "}
+                      <img
+                        src="/check.gif"
+                        alt="Correct"
+                        className="capital-pass-img"
+                      />
+                    </h3>
+                    <input
+                      className="play-capital-answer"
+                      type="text"
+                      value={answer}
+                      onChange={handleAnswerChange}
+                      placeholder="Type here..."
+                      style={{
+                        background: theme.elevated,
+                        border: `2px solid ${theme.border}`,
+                      }}
+                    />
+                  </div>
+                )}
+                {showFail && (
+                  <div>
+                    <h3 className="play-capital-question">
                       <img
                         src="/fail.gif"
                         alt="Wrong"
                         className="capital-fail-img"
-                      />
-                    </span>
-                  </h3>
-                  <input
-                    className="play-capital-answer"
-                    type="text"
-                    value={answer}
-                    onChange={handleAnswerChange}
-                    placeholder="Type here..."
+                      />{" "}
+                      Capital of <span>{random.country}</span> is{" "}
+                      <span>
+                        {random.capital}{" "}
+                        <img
+                          src="/fail.gif"
+                          alt="Wrong"
+                          className="capital-fail-img"
+                        />
+                      </span>
+                    </h3>
+                    <input
+                      className="play-capital-answer"
+                      type="text"
+                      value={answer}
+                      onChange={handleAnswerChange}
+                      placeholder="Type here..."
+                      style={{
+                        background: theme.elevated,
+                        border: `2px solid ${theme.border}`,
+                      }}
+                    />
+                  </div>
+                )}
+                <div className="play-capital-choices">
+                  <button
+                    className="play-capital-reset-btn"
                     style={{
                       background: theme.elevated,
                       border: `2px solid ${theme.border}`,
                     }}
-                  />
-                </div>
-              )}
-              <div className="play-capital-choices">
-                <button
-                  className="play-capital-reset-btn"
-                  style={{
-                    background: theme.elevated,
-                    border: `2px solid ${theme.border}`,
-                  }}
-                  onClick={() => {
-                    let result = shuffle();
-                    if (random === null) {
-                      setRandom(result);
-                    } else if (random?.id === result?.id) {
-                      do {
-                        result = shuffle();
+                    onClick={() => {
+                      let result = shuffle();
+                      if (random === null) {
                         setRandom(result);
-                      } while (result?.id === random?.id);
-                    } else {
-                      setRandom(result);
-                    }
-                    setAnswer("");
-                    setShowFail(false);
-                    setShowStats(false);
-                    setScore(0);
-                    setTimeLeft(60);
-                    setTimerRunning(true);
-                  }}
-                >
-                  Restart
-                </button>
-                <button
-                  className="play-capital-submit-btn"
-                  style={{
-                    background: theme.elevated,
-                    border: `2px solid ${theme.border}`,
-                  }}
-                  disabled={showCorrect || showFail || !answer}
-                  onClick={() => {
-                    checkSubmit();
-                  }}
-                >
-                  Submit
-                </button>
+                      } else if (random?.id === result?.id) {
+                        do {
+                          result = shuffle();
+                          setRandom(result);
+                        } while (result?.id === random?.id);
+                      } else {
+                        setRandom(result);
+                      }
+                      setAnswer("");
+                      setShowFail(false);
+                      setShowStats(false);
+                      setScore(0);
+                      setTimeLeft(60);
+                      setTimerRunning(true);
+                    }}
+                  >
+                    Restart
+                  </button>
+                  <button
+                    className="play-capital-submit-btn"
+                    style={{
+                      background: theme.elevated,
+                      border: `2px solid ${theme.border}`,
+                    }}
+                    disabled={showCorrect || showFail || !answer}
+                    onClick={() => {
+                      checkSubmit();
+                    }}
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+              <div
+                className="play-capital-user-board"
+                style={{
+                  background: theme.elevated,
+                  border: `2px solid ${theme.border}`,
+                }}
+              >
+                {username ? (
+                  <div>
+                    <div>
+                      <p style={{ fontSize: typography.size.xs }}>
+                        Welcome Back
+                      </p>
+                      <p className="play-capital-username">{username}</p>
+                    </div>
+                    <button
+                      className="play-capital-user-stats"
+                      style={{
+                        background: theme.elevated,
+                        border: `2px solid ${theme.border}`,
+                      }}
+                    >
+                      See Stats
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <div>
+                      <p style={{ fontSize: typography.size.xs }}>
+                        To see stats and
+                        <br />
+                        save progress
+                      </p>
+                    </div>
+                    <button
+                      className="play-capital-user-login"
+                      style={{
+                        background: theme.elevated,
+                        border: `2px solid ${theme.border}`,
+                      }}
+                    >
+                      Login
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
-            <div
-              className="play-capital-user-board"
-              style={{
-                background: theme.elevated,
-                border: `2px solid ${theme.border}`,
-              }}
-            >
-              {username ? (
-                <div>
-                  <div>
-                    <p style={{ fontSize: typography.size.xs }}>Welcome Back</p>
-                    <p className="play-capital-username">{username}</p>
-                  </div>
-                  <button
-                    className="play-capital-user-stats"
-                    style={{
-                      background: theme.elevated,
-                      border: `2px solid ${theme.border}`,
-                    }}
-                  >
-                    See Stats
-                  </button>
-                </div>
-              ) : (
-                <div>
-                  <div>
-                    <p style={{ fontSize: typography.size.xs }}>
-                      To see stats and
-                      <br />
-                      save progress
-                    </p>
-                  </div>
-                  <button
-                    className="play-capital-user-login"
-                    style={{
-                      background: theme.elevated,
-                      border: `2px solid ${theme.border}`,
-                    }}
-                  >
-                    Login
-                  </button>
-                </div>
-              )}
+            <div className="screen-error-capital">
+              <h3 className="screen-error-capital-title">
+                This Game Requires More Space
+              </h3>
+              <img src="/fail.gif" className="screen-error-capital-icon" />
+              <h3 className="screen-error-capital-text">
+                Screen Size Too Small
+              </h3>
             </div>
           </div>
         ) : showStats ? (

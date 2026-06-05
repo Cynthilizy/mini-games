@@ -16,6 +16,7 @@ function Home({ theme, flags, capitals, handleReset }) {
               link="/play-rps"
               theme={theme}
               handleReset={handleReset}
+              className="card-option"
             />
             <Card
               image="/capitals.jpg"
@@ -24,6 +25,7 @@ function Home({ theme, flags, capitals, handleReset }) {
               link="/play-capitals"
               theme={theme}
               handleReset={handleReset}
+              className="card-option"
             />
             <Card
               image="/flag.jpeg"
@@ -32,6 +34,7 @@ function Home({ theme, flags, capitals, handleReset }) {
               link="/play-flags"
               theme={theme}
               handleReset={handleReset}
+              className="card-option"
             />
             <Card
               image="/snake.jpg"
@@ -40,6 +43,7 @@ function Home({ theme, flags, capitals, handleReset }) {
               link="/play-snake"
               theme={theme}
               handleReset={handleReset}
+              className="card-option"
             />
           </div>
         )}

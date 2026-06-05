@@ -301,140 +301,149 @@ function PlaySnake({ theme, showSnake, setShowSnake }) {
         style={{ color: theme.textPrimary }}
       >
         {showSnake ? (
-          <div
-            className={`${snakeFlash ? "play-snake snake-flash" : "play-snake"}`}
-          >
+          <div className="play-snake-wrapper">
             <div
-              className="play-snake-score-container"
-              style={{
-                background: theme.elevated,
-                border: `2px solid ${theme.border}`,
-              }}
+              className={`${snakeFlash ? "play-snake snake-flash" : "play-snake"}`}
             >
-              <div className="play-snake-choices">
-                <button
-                  className="play-snake-pause-btn"
-                  style={{
-                    background: snakeFlash ? theme.muted : theme.elevated,
-                    border: `2px solid ${theme.border}`,
-                    cursor: snakeFlash ? "not-allowed" : "pointer",
-                  }}
-                  onClick={() => {
-                    if (snakeFlash) return;
-                    setIsPaused((prev) => !prev);
-                  }}
-                >
-                  {isPaused ? "Resume" : "Pause"}
-                </button>
-                <button
-                  className="play-snake-reset-btn"
-                  style={{
-                    background: theme.elevated,
-                    border: `2px solid ${theme.border}`,
-                  }}
-                  onClick={() => {
-                    resetGame();
-                  }}
-                >
-                  Restart
-                </button>
-                {username ? (
-                  <div>
-                    <button
-                      className="play-snake-user-stats"
+              <div
+                className="play-snake-score-container"
+                style={{
+                  background: theme.elevated,
+                  border: `2px solid ${theme.border}`,
+                }}
+              >
+                <div className="play-snake-choices">
+                  <button
+                    className="play-snake-pause-btn"
+                    style={{
+                      background: snakeFlash ? theme.muted : theme.elevated,
+                      border: `2px solid ${theme.border}`,
+                      cursor: snakeFlash ? "not-allowed" : "pointer",
+                    }}
+                    onClick={() => {
+                      if (snakeFlash) return;
+                      setIsPaused((prev) => !prev);
+                    }}
+                  >
+                    {isPaused ? "Resume" : "Pause"}
+                  </button>
+                  <button
+                    className="play-snake-reset-btn"
+                    style={{
+                      background: theme.elevated,
+                      border: `2px solid ${theme.border}`,
+                    }}
+                    onClick={() => {
+                      resetGame();
+                    }}
+                  >
+                    Restart
+                  </button>
+                  {username ? (
+                    <div>
+                      <button
+                        className="play-snake-user-stats"
+                        style={{
+                          background: theme.elevated,
+                          border: `2px solid ${theme.border}`,
+                        }}
+                      >
+                        See Stats
+                      </button>
+                    </div>
+                  ) : (
+                    <div>
+                      <button
+                        className="play-snake-user-login"
+                        style={{
+                          background: theme.elevated,
+                          border: `2px solid ${theme.border}`,
+                        }}
+                      >
+                        Login
+                      </button>
+                    </div>
+                  )}
+                </div>
+                <div className={`play-snake-score ${scorePop ? "pop" : ""}`}>
+                  <img
+                    src="/apple.png"
+                    alt="apple"
+                    className="play-snake-score-img"
+                  />
+                  <h3>{userScore}</h3>
+                </div>
+              </div>
+              <div
+                className={`${snakeShake ? "play-snake-arena-container snake-shake" : "play-snake-arena-container"}`}
+                style={{
+                  border: `2px solid ${theme.border}`,
+                  background: theme.elevated,
+                }}
+              >
+                {snake.map(([x, y], i) => {
+                  const isHead = i === 0;
+                  const isTail = i === snake.length - 1;
+
+                  const [dx, dy] = getDirection(i);
+                  const angle = Math.atan2(dy, dx);
+
+                  const headAngle = getAngleFromDirection(direction);
+
+                  return (
+                    <div
+                      key={i}
+                      className={`snake-segment ${isHead ? "head" : ""} ${
+                        isTail ? "tail" : ""
+                      }`}
                       style={{
-                        background: theme.elevated,
-                        border: `2px solid ${theme.border}`,
+                        gridColumn: x + 1,
+                        gridRow: y + 1,
+                        transform: `rotate(${
+                          isHead ? headAngle : angle * (180 / Math.PI)
+                        }deg)`,
                       }}
                     >
-                      See Stats
-                    </button>
-                  </div>
-                ) : (
-                  <div>
-                    <button
-                      className="play-snake-user-login"
-                      style={{
-                        background: theme.elevated,
-                        border: `2px solid ${theme.border}`,
-                      }}
-                    >
-                      Login
-                    </button>
-                  </div>
-                )}
-              </div>
-              <div className={`play-snake-score ${scorePop ? "pop" : ""}`}>
-                <img
-                  src="/apple.png"
-                  alt="apple"
-                  className="play-snake-score-img"
-                />
-                <h3>{userScore}</h3>
-              </div>
-            </div>
-            <div
-              className={`${snakeShake ? "play-snake-arena-container snake-shake" : "play-snake-arena-container"}`}
-              style={{
-                border: `2px solid ${theme.border}`,
-                background: theme.elevated,
-              }}
-            >
-              {snake.map(([x, y], i) => {
-                const isHead = i === 0;
-                const isTail = i === snake.length - 1;
-
-                const [dx, dy] = getDirection(i);
-                const angle = Math.atan2(dy, dx);
-
-                const headAngle = getAngleFromDirection(direction);
-
-                return (
-                  <div
-                    key={i}
-                    className={`snake-segment ${isHead ? "head" : ""} ${
-                      isTail ? "tail" : ""
-                    }`}
+                      {isHead && (
+                        <>
+                          <div className="eye left-eye" />
+                          <div className="eye right-eye" />
+                          <div className="tongue" />
+                        </>
+                      )}
+                    </div>
+                  );
+                })}
+                {isPaused && <h3 className="snake-paused">Paused</h3>}
+                {snakeFlash && <h3 className="snake-gameover">Game Over</h3>}
+                {walls.map(([x, y], i) => (
+                  <img
+                    key={`wall-${i}`}
+                    src="/wall.jpg"
+                    className="wall"
                     style={{
                       gridColumn: x + 1,
                       gridRow: y + 1,
-                      transform: `rotate(${
-                        isHead ? headAngle : angle * (180 / Math.PI)
-                      }deg)`,
                     }}
-                  >
-                    {isHead && (
-                      <>
-                        <div className="eye left-eye" />
-                        <div className="eye right-eye" />
-                        <div className="tongue" />
-                      </>
-                    )}
-                  </div>
-                );
-              })}
-              {isPaused && <h3 className="snake-paused">Paused</h3>}
-              {snakeFlash && <h3 className="snake-gameover">Game Over</h3>}
-              {walls.map(([x, y], i) => (
+                  />
+                ))}
                 <img
-                  key={`wall-${i}`}
-                  src="/wall.jpg"
-                  className="wall"
+                  src="/apple.png"
+                  alt="apple"
+                  className={`apple ${running && !isPaused ? "apple-running" : ""}`}
                   style={{
-                    gridColumn: x + 1,
-                    gridRow: y + 1,
+                    gridColumn: apple[0] + 1,
+                    gridRow: apple[1] + 1,
                   }}
                 />
-              ))}
-              <img
-                src="/apple.png"
-                alt="apple"
-                className={`apple ${running && !isPaused ? "apple-running" : ""}`}
-                style={{
-                  gridColumn: apple[0] + 1,
-                  gridRow: apple[1] + 1,
-                }}
-              />
+              </div>
+            </div>
+            <div className="screen-error-flag">
+              <h3 className="screen-error-flag-title">
+                This Game Requires More Space
+              </h3>
+              <img src="/fail.gif" className="screen-error-flag-icon" />
+              <h3 className="screen-error-flag-text">Screen Size Too Small</h3>
             </div>
           </div>
         ) : showStats ? (
