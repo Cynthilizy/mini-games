@@ -3,14 +3,28 @@ import "./PlayRPS.css";
 import { typography } from "../typography";
 import Clock from "../assets/clock.svg?react";
 import confetti from "canvas-confetti";
+import LoginForm from "../LoginForm";
 
-function PlayRPS({ theme, showRps, setShowRps }) {
+function PlayRPS({
+  theme,
+  showRps,
+  setShowRps,
+  API_URL,
+  username,
+  setUsername,
+  gameType,
+  setGameType,
+  bestGame,
+  bestGameTime,
+  lastGame,
+  lastGameTime,
+  sendScore,
+}) {
   const [showStats, setShowStats] = useState(false);
   const [userChoice, setUserChoice] = useState("");
   const [computerChoice, setComputerChoice] = useState("");
   const [userScore, setUserScore] = useState(0);
   const [computerScore, setComputerScore] = useState(0);
-  const [username, SetUsername] = useState("");
   const [showCorrect, setShowCorrect] = useState(false);
   const [showFail, setShowFail] = useState(false);
   const [showTie, setShowTie] = useState(false);
@@ -18,6 +32,8 @@ function PlayRPS({ theme, showRps, setShowRps }) {
   const [timerRunning, setTimerRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [shake, setShake] = useState(false);
+
+  const gameName = "rps";
 
   const roundEnded = showCorrect || showFail || showTie;
 
@@ -316,6 +332,7 @@ function PlayRPS({ theme, showRps, setShowRps }) {
                   border: `2px solid ${theme.border}`,
                 }}
                 onClick={() => {
+                  sendScore(userScore);
                   setUserScore(0);
                   setComputerScore(0);
                   resetRound();
@@ -324,7 +341,7 @@ function PlayRPS({ theme, showRps, setShowRps }) {
               >
                 Restart
               </button>
-              {username ? (
+              {username !== "" && (
                 <div>
                   <button
                     className="play-rps-user-stats"
@@ -332,17 +349,30 @@ function PlayRPS({ theme, showRps, setShowRps }) {
                       background: theme.elevated,
                       border: `2px solid ${theme.border}`,
                     }}
+                    onClick={() => {
+                      setGameType(gameName);
+                      setShowRps(false);
+                      setShowStats(true);
+                      setIsPaused(true);
+                    }}
                   >
                     See Stats
                   </button>
                 </div>
-              ) : (
+              )}{" "}
+              {username === "" && (
                 <div>
                   <button
                     className="play-rps-user-login"
                     style={{
                       background: theme.elevated,
                       border: `2px solid ${theme.border}`,
+                    }}
+                    onClick={() => {
+                      setGameType(gameName);
+                      setShowRps(false);
+                      setShowStats(true);
+                      setIsPaused(true);
                     }}
                   >
                     Login
@@ -352,7 +382,21 @@ function PlayRPS({ theme, showRps, setShowRps }) {
             </div>
           </div>
         ) : showStats ? (
-          <div>Stats Coming Soon</div>
+          <div className="rps-stats-container">
+            <LoginForm
+              API_URL={API_URL}
+              username={username}
+              setUsername={setUsername}
+              gametype={gameType}
+              bestGame={bestGame}
+              bestGameTime={bestGameTime}
+              lastGame={lastGame}
+              lastGameTime={lastGameTime}
+              setShowGame={setShowRps}
+              setShowStats={setShowStats}
+              theme={theme}
+            />
+          </div>
         ) : (
           <div
             className="start-rps"
@@ -365,6 +409,7 @@ function PlayRPS({ theme, showRps, setShowRps }) {
               onClick={() => {
                 setShowRps(true);
                 resetRound();
+                setGameType(gameName);
               }}
             >
               Play
@@ -374,6 +419,7 @@ function PlayRPS({ theme, showRps, setShowRps }) {
               onClick={() => {
                 setShowRps(false);
                 setShowStats(true);
+                setGameType(gameName);
               }}
             >
               Stats

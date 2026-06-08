@@ -1,0 +1,531 @@
+.login-section {
+  width: min(450px, 90vw);
+  height: 50%;
+
+  margin: 0 auto;
+  padding: 42px;
+
+  justify-content: end;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  border-radius: 16px;
+
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.login-input-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.login-input-fields input {
+  padding: 12px 14px;
+
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  background: transparent;
+  color: inherit;
+
+  font-size: 0.95rem;
+}
+
+.login-input-fields input:focus {
+  outline: none;
+  border-color: rgba(100, 150, 255, 0.5);
+}
+
+.login-submit-btns {
+  display: flex;
+  gap: 12px;
+  margin-top: 5px;
+}
+
+.login-submit-btns button {
+  flex: 1;
+
+  padding: 12px;
+
+  border-radius: 10px;
+  border: none;
+
+  cursor: pointer;
+
+  font-weight: 600;
+
+  transition: transform 0.2s ease;
+}
+
+.login-submit-btns button:hover {
+  transform: translateY(-2px);
+}
+
+.login-submit-btns button:first-child {
+  background: #4f46e5;
+  color: white;
+}
+
+.login-submit-btns button:last-child {
+  background: transparent;
+  color: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.login-icons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.login-icons svg {
+  width: 42px;
+  height: 42px;
+
+  padding: 10px;
+
+  border-radius: 12px;
+
+  cursor: pointer;
+
+  background: rgba(255, 255, 255, 0.05);
+
+  transition: transform 0.2s ease;
+}
+
+.login-icons svg:hover {
+  transform: translateY(-2px);
+}
+
+.error-login {
+  color: red;
+  height: 10px;
+}
+
+.user-view-area {
+  width: min(500px, 100%);
+  height: 320px;
+  padding: 24px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.05);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.welcome-user {
+  margin: 0;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.welcome-user span {
+  opacity: 0.9;
+}
+
+.user-view-area-bottom {
+  display: flex;
+  align-items: stretch;
+  gap: 18px;
+  margin-top: 10px;
+}
+
+.score-trace {
+  flex: 2; /* takes more space */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  padding: 18px;
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.stats-title {
+  text-align: center;
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.stat-row:last-child {
+  border-bottom: none;
+}
+
+.stat-row span {
+  opacity: 0.7;
+}
+
+.stat-row strong {
+  font-size: 1rem;
+}
+
+.db-actions {
+  flex: 1; /* smaller than stats */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.score-trace,
+.db-actions {
+  border-radius: 14px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.modify-btns,
+.danger-zone-btns {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.db-actions button {
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+
+  cursor: pointer;
+  font-weight: 600;
+
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+
+  transition: all 0.2s ease;
+}
+
+.db-actions button:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.logout-btn {
+  opacity: 0.9;
+}
+
+.user-login-area {
+  position: relative;
+}
+
+.close-login-btn {
+  position: absolute;
+  left: -1px;
+  width: 30px;
+  height: 30px;
+
+  border-radius: 50%;
+  padding: 8px;
+
+  cursor: pointer;
+
+  background: rgba(0, 0, 0, 0.2);
+  color: inherit;
+
+  z-index: 10;
+
+  transition: 0.2s ease;
+}
+
+.close-login-btn:hover {
+  background: rgba(0, 0, 0, 0.35);
+  transform: scale(1.05);
+}
+
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background: rgba(0, 0, 0, 0.65);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+
+  z-index: 99999;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: rgba(0, 0, 0, 0.7);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+
+  z-index: 10000;
+}
+
+.modal-content {
+  position: relative;
+
+  width: min(450px, 90vw);
+  height: 50%;
+
+  padding: 28px;
+
+  border-radius: 20px;
+
+  background: #1e1e1e;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.45),
+    0 0 20px rgba(255, 255, 255, 0.04);
+
+  outline: none;
+
+  display: flex;
+  flex-direction: column;
+  animation: modalIn 0.25s ease;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+
+  font-size: 1.8rem;
+
+  cursor: pointer;
+
+  opacity: 0.7;
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.modal-close-btn:hover {
+  opacity: 1;
+  transform: rotate(90deg);
+}
+
+.modal-content button {
+  cursor: pointer;
+}
+
+.modal-error {
+  color: #ff5f5f;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.change-name-contents {
+  text-align: center;
+}
+
+.change-name-contents input {
+  width: 100%;
+
+  padding: 14px 16px;
+
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  background: rgba(255, 255, 255, 0.05);
+
+  color: white;
+
+  font-size: 1rem;
+
+  box-sizing: border-box;
+
+  transition: all 0.2s ease;
+  margin-bottom: 10px;
+}
+
+.change-name-contents input:focus {
+  outline: none;
+
+  border-color: rgba(255, 255, 255, 0.35);
+
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.modal-save-btn {
+  width: 100%;
+
+  padding: 14px;
+
+  border: none;
+  border-radius: 12px;
+
+  font-weight: 600;
+  font-size: 1rem;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.modal-save-btn:hover {
+  transform: translateY(-2px);
+}
+
+.change-password-content {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: center;
+}
+
+.change-password-content h2 {
+  margin: 0;
+
+  text-align: center;
+
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.modal-description {
+  margin: 0;
+
+  text-align: center;
+
+  opacity: 0.7;
+
+  font-size: 0.95rem;
+}
+
+.password-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.password-inputs input {
+  width: 100%;
+
+  padding: 14px 16px;
+
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  background: rgba(255, 255, 255, 0.05);
+
+  color: white;
+
+  font-size: 1rem;
+
+  box-sizing: border-box;
+
+  transition: all 0.2s ease;
+}
+
+.password-inputs input:focus {
+  outline: none;
+
+  border-color: rgba(255, 255, 255, 0.3);
+
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.delete-account-container {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.delete-account-container h2 {
+  color: #ff5b5b;
+}
+
+.delete-account-container p {
+  opacity: 0.8;
+}
+
+.danger-btn {
+  width: 100%;
+
+  padding: 14px;
+
+  border: none;
+  border-radius: 12px;
+
+  font-weight: 600;
+  font-size: 1rem;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+
+  background: rgba(255, 0, 0, 0.15);
+  border: 1px solid rgba(255, 0, 0, 0.4);
+  color: #ff4d4d;
+}
+
+.danger-btn:hover {
+  background: rgba(255, 0, 0, 0.25);
+  transform: translateY(-2px);
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
