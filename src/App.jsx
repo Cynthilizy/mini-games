@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import { colors } from "./colors";
@@ -9,8 +9,8 @@ import PlayCapitals from "./capitals-quiz/PlayCapitals";
 import PlayFlags from "./flag-quiz/PlayFlags";
 import PlayRPS from "./rock-paper-scissors/PlayRPS";
 import PlaySnake from "./snake-master/PlaySnake";
-import { useCSV } from "./UseCSV";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 function App() {
   const [mode, setMode] = useState("dark");
@@ -19,9 +19,46 @@ function App() {
   const [showRps, setShowRps] = useState(false);
   const [showSnake, setShowSnake] = useState(false);
 
+  const [capitals, setCapitals] = useState([]);
+  const [flags, setFlags] = useState([]);
+  const [username, setUsername] = useState("");
+  const [authLoading, setAuthLoading] = useState(true);
+
+  const [gameType, setGameType] = useState("");
+  const [bestGame, setBestGame] = useState(0);
+  const [bestGameTime, setBestGameTime] = useState("");
+  const [lastGame, setLastGame] = useState(0);
+  const [lastGameTime, setLastGameTime] = useState("");
+
   const theme = colors[mode];
 
   const location = useLocation();
+
+  const API_URL = import.meta.env.VITE_API_URL;
+
+  let lastSent = 0;
+
+  useEffect(() => {
+    const task = async () => {
+      try {
+        const [flagsResult, capitalsResult] = await Promise.all([
+          axios.get(`${API_URL}/flags`, {
+            withCredentials: true,
+          }),
+          axios.get(`${API_URL}/capitals`, {
+            withCredentials: true,
+          }),
+        ]);
+
+        setFlags(flagsResult.data);
+        setCapitals(capitalsResult.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    task();
+  }, []);
 
   const routes = [
     { path: "/", title: "Mini Games and Quizzes" },
@@ -34,26 +71,79 @@ function App() {
   const title =
     routes.find((r) => r.path === location.pathname)?.title || "Mini Games";
 
-  const capitals = useCSV(
-    "/local-db/capitals.csv",
-    ([id, country, capital]) => ({
-      id,
-      country,
-      capital,
-    }),
-  );
-
-  const flags = useCSV("/local-db/flags.csv", ([id, country, flag]) => ({
-    id,
-    country,
-    flag,
-  }));
-
   const handleReset = () => {
     setShowCapital(false);
     setShowFlag(false);
     setShowRps(false);
     setShowSnake(false);
+  };
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/me`, {
+          withCredentials: true,
+        });
+
+        setUsername(res.data.user.username);
+      } catch {
+        setUsername("");
+      } finally {
+        setAuthLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
+
+  useEffect(() => {
+    if (username === "" || gameType === "") return;
+
+    const getScore = async () => {
+      try {
+        const { data } = await axios.get(`${API_URL}/game-stats/${gameType}`, {
+          withCredentials: true,
+        });
+
+        if (!data) {
+          setLastGame(0);
+          setLastGameTime("---");
+          setBestGame(0);
+          setBestGameTime("---");
+          return;
+        }
+
+        setLastGame(data.last_score || 0);
+        setLastGameTime(data.last_score > 0 ? data.last_played_at : "---");
+
+        setBestGame(data.best_score || 0);
+        setBestGameTime(data.best_score > 0 ? data.best_score_time : "---");
+      } catch (err) {
+        console.error(err);
+
+        setLastGame(0);
+        setLastGameTime("---");
+        setBestGame(0);
+        setBestGameTime("---");
+      }
+    };
+
+    getScore();
+  }, [username, gameType]);
+
+  const sendScore = async (score) => {
+    if (!username || !gameType || score == null || score <= 0) return;
+    try {
+      const res = await axios.post(
+        `${API_URL}/submit-score`,
+        { gameType, score },
+        { withCredentials: true },
+      );
+      setGameType(gameType);
+      return res.data;
+    } catch (err) {
+      console.error("Score submit failed:", err.response?.data || err.message);
+    }
   };
 
   return (
@@ -65,10 +155,14 @@ function App() {
             path="/"
             element={
               <Home
+                username={username}
+                setUsername={setUsername}
+                API_URL={API_URL}
                 theme={theme}
                 flags={flags}
                 capitals={capitals}
                 handleReset={handleReset}
+                authLoading={authLoading}
               />
             }
           ></Route>
@@ -77,9 +171,19 @@ function App() {
             element={
               <PlayCapitals
                 capitals={capitals}
+                username={username}
+                setUsername={setUsername}
                 theme={theme}
                 showCapital={showCapital}
                 setShowCapital={setShowCapital}
+                API_URL={API_URL}
+                gameType={gameType}
+                setGameType={setGameType}
+                bestGame={bestGame}
+                bestGameTime={bestGameTime}
+                lastGame={lastGame}
+                lastGameTime={lastGameTime}
+                sendScore={sendScore}
               />
             }
           ></Route>
@@ -88,9 +192,19 @@ function App() {
             element={
               <PlayFlags
                 flags={flags}
+                username={username}
+                setUsername={setUsername}
                 theme={theme}
                 showFlag={showFlag}
                 setShowFlag={setShowFlag}
+                API_URL={API_URL}
+                gameType={gameType}
+                setGameType={setGameType}
+                bestGame={bestGame}
+                bestGameTime={bestGameTime}
+                lastGame={lastGame}
+                lastGameTime={lastGameTime}
+                sendScore={sendScore}
               />
             }
           ></Route>
@@ -99,8 +213,18 @@ function App() {
             element={
               <PlayRPS
                 theme={theme}
+                username={username}
+                setUsername={setUsername}
                 showRps={showRps}
                 setShowRps={setShowRps}
+                API_URL={API_URL}
+                gameType={gameType}
+                setGameType={setGameType}
+                bestGame={bestGame}
+                bestGameTime={bestGameTime}
+                lastGame={lastGame}
+                lastGameTime={lastGameTime}
+                sendScore={sendScore}
               />
             }
           ></Route>
@@ -109,8 +233,18 @@ function App() {
             element={
               <PlaySnake
                 theme={theme}
+                username={username}
+                setUsername={setUsername}
                 showSnake={showSnake}
                 setShowSnake={setShowSnake}
+                API_URL={API_URL}
+                gameType={gameType}
+                setGameType={setGameType}
+                bestGame={bestGame}
+                bestGameTime={bestGameTime}
+                lastGame={lastGame}
+                lastGameTime={lastGameTime}
+                sendScore={sendScore}
               />
             }
           ></Route>

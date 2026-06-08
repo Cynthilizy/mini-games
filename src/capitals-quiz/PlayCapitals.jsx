@@ -3,18 +3,35 @@ import "./PlayCapitals.css";
 import { typography } from "../typography";
 import Clock from "../assets/clock.svg?react";
 import confetti from "canvas-confetti";
+import LoginForm from "../LoginForm";
 
-function PlayCapitals({ capitals, theme, showCapital, setShowCapital }) {
+function PlayCapitals({
+  capitals,
+  theme,
+  showCapital,
+  setShowCapital,
+  API_URL,
+  username,
+  setUsername,
+  gameType,
+  setGameType,
+  bestGame,
+  bestGameTime,
+  lastGame,
+  lastGameTime,
+  sendScore,
+}) {
   const [showStats, setShowStats] = useState(false);
   const [answer, setAnswer] = useState("");
   const [score, setScore] = useState(0);
-  const [username, SetUsername] = useState("");
   const [random, setRandom] = useState(null);
   const [showCorrect, setShowCorrect] = useState(false);
   const [showFail, setShowFail] = useState(false);
   const [timeLeft, setTimeLeft] = useState(60);
   const [timerRunning, setTimerRunning] = useState(true);
   const [flash, setFlash] = useState(false);
+
+  const gameName = "capitals";
 
   const shuffle = () => {
     const randomNum = Math.random();
@@ -204,6 +221,7 @@ function PlayCapitals({ capitals, theme, showCapital, setShowCapital }) {
                       border: `2px solid ${theme.border}`,
                     }}
                     onClick={() => {
+                      sendScore(score);
                       let result = shuffle();
                       if (random === null) {
                         setRandom(result);
@@ -247,7 +265,7 @@ function PlayCapitals({ capitals, theme, showCapital, setShowCapital }) {
                   border: `2px solid ${theme.border}`,
                 }}
               >
-                {username ? (
+                {username !== "" && (
                   <div>
                     <div>
                       <p style={{ fontSize: typography.size.xs }}>
@@ -261,11 +279,17 @@ function PlayCapitals({ capitals, theme, showCapital, setShowCapital }) {
                         background: theme.elevated,
                         border: `2px solid ${theme.border}`,
                       }}
+                      onClick={() => {
+                        setGameType(gameName);
+                        setShowCapital(false);
+                        setShowStats(true);
+                      }}
                     >
                       See Stats
                     </button>
                   </div>
-                ) : (
+                )}{" "}
+                {username === "" && (
                   <div>
                     <div>
                       <p style={{ fontSize: typography.size.xs }}>
@@ -279,6 +303,11 @@ function PlayCapitals({ capitals, theme, showCapital, setShowCapital }) {
                       style={{
                         background: theme.elevated,
                         border: `2px solid ${theme.border}`,
+                      }}
+                      onClick={() => {
+                        setGameType(gameName);
+                        setShowCapital(false);
+                        setShowStats(true);
                       }}
                     >
                       Login
@@ -298,7 +327,21 @@ function PlayCapitals({ capitals, theme, showCapital, setShowCapital }) {
             </div>
           </div>
         ) : showStats ? (
-          <div>Stats Coming Soon</div>
+          <div className="rps-stats-container">
+            <LoginForm
+              API_URL={API_URL}
+              username={username}
+              setUsername={setUsername}
+              gametype={gameType}
+              bestGame={bestGame}
+              bestGameTime={bestGameTime}
+              lastGame={lastGame}
+              lastGameTime={lastGameTime}
+              setShowGame={setShowCapital}
+              setShowStats={setShowStats}
+              theme={theme}
+            />
+          </div>
         ) : (
           <div
             className="start-capital"
@@ -325,6 +368,7 @@ function PlayCapitals({ capitals, theme, showCapital, setShowCapital }) {
                 setScore(0);
                 setTimeLeft(60);
                 setTimerRunning(true);
+                setGameType(gameName);
               }}
             >
               Play
@@ -334,6 +378,7 @@ function PlayCapitals({ capitals, theme, showCapital, setShowCapital }) {
               onClick={() => {
                 setShowCapital(false);
                 setShowStats(true);
+                setGameType(gameName);
               }}
             >
               Stats

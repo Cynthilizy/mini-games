@@ -4,18 +4,35 @@ import { typography } from "../typography";
 import Clock from "../assets/clock.svg?react";
 import { code } from "country-emoji";
 import confetti from "canvas-confetti";
+import LoginForm from "../LoginForm";
 
-function PlayFlags({ flags, theme, showFlag, setShowFlag }) {
+function PlayFlags({
+  flags,
+  theme,
+  showFlag,
+  setShowFlag,
+  API_URL,
+  username,
+  setUsername,
+  gameType,
+  setGameType,
+  bestGame,
+  bestGameTime,
+  lastGame,
+  lastGameTime,
+  sendScore,
+}) {
   const [showStats, setShowStats] = useState(false);
   const [answer, setAnswer] = useState("");
   const [score, setScore] = useState(0);
-  const [username, SetUsername] = useState("");
   const [random, setRandom] = useState(null);
   const [showCorrect, setShowCorrect] = useState(false);
   const [showFail, setShowFail] = useState(false);
   const [timeLeft, setTimeLeft] = useState(60);
   const [timerRunning, setTimerRunning] = useState(true);
   const [flash, setFlash] = useState(false);
+
+  const gameName = "flags";
 
   const shuffle = () => {
     const randomNum = Math.random();
@@ -32,7 +49,7 @@ function PlayFlags({ flags, theme, showFlag, setShowFlag }) {
   };
 
   const checkSubmit = () => {
-    const randomCountry = random.country.trim().toLowerCase();
+    const randomCountry = random.name.trim().toLowerCase();
     const userAnswer = answer.trim().toLowerCase();
 
     if (randomCountry === userAnswer) {
@@ -130,7 +147,7 @@ function PlayFlags({ flags, theme, showFlag, setShowFlag }) {
                 >
                   Wrong,{" "}
                 </span>
-                Correct Country is {random.country}{" "}
+                Correct Country is {random.name}{" "}
                 <img src="/fail.gif" className="flag-pass-img" />
               </h3>
             )}
@@ -154,7 +171,7 @@ function PlayFlags({ flags, theme, showFlag, setShowFlag }) {
                 <div className="flag-img">
                   <img
                     src={`https://flagcdn.com/w320/${random.flag}.png`}
-                    alt={`Flag of ${random.country}`}
+                    alt={`Flag of ${random.name}`}
                   />
                 </div>
 
@@ -166,6 +183,7 @@ function PlayFlags({ flags, theme, showFlag, setShowFlag }) {
                       border: `2px solid ${theme.border}`,
                     }}
                     onClick={() => {
+                      sendScore(score);
                       let result = shuffle();
                       if (random === null) {
                         setRandom(result);
@@ -220,7 +238,7 @@ function PlayFlags({ flags, theme, showFlag, setShowFlag }) {
                   border: `2px solid ${theme.border}`,
                 }}
               >
-                {username ? (
+                {username !== "" && (
                   <div>
                     <div>
                       <p style={{ fontSize: typography.size.xs }}>
@@ -234,11 +252,17 @@ function PlayFlags({ flags, theme, showFlag, setShowFlag }) {
                         background: theme.elevated,
                         border: `2px solid ${theme.border}`,
                       }}
+                      onClick={() => {
+                        setGameType(gameName);
+                        setShowFlag(false);
+                        setShowStats(true);
+                      }}
                     >
                       See Stats
                     </button>
                   </div>
-                ) : (
+                )}{" "}
+                {username === "" && (
                   <div>
                     <div>
                       <p style={{ fontSize: typography.size.xs }}>
@@ -252,6 +276,11 @@ function PlayFlags({ flags, theme, showFlag, setShowFlag }) {
                       style={{
                         background: theme.elevated,
                         border: `2px solid ${theme.border}`,
+                      }}
+                      onClick={() => {
+                        setGameType(gameName);
+                        setShowFlag(false);
+                        setShowStats(true);
                       }}
                     >
                       Login
@@ -269,7 +298,21 @@ function PlayFlags({ flags, theme, showFlag, setShowFlag }) {
             </div>
           </div>
         ) : showStats ? (
-          <div>Stats Coming Soon</div>
+          <div className="flag-stats-container">
+            <LoginForm
+              API_URL={API_URL}
+              username={username}
+              setUsername={setUsername}
+              gametype={gameType}
+              bestGame={bestGame}
+              bestGameTime={bestGameTime}
+              lastGame={lastGame}
+              lastGameTime={lastGameTime}
+              setShowGame={setShowFlag}
+              setShowStats={setShowStats}
+              theme={theme}
+            />
+          </div>
         ) : (
           <div
             className="start-flag"
@@ -296,6 +339,7 @@ function PlayFlags({ flags, theme, showFlag, setShowFlag }) {
                 setScore(0);
                 setTimeLeft(60);
                 setTimerRunning(true);
+                setGameType(gameName);
               }}
             >
               Play
@@ -305,6 +349,7 @@ function PlayFlags({ flags, theme, showFlag, setShowFlag }) {
               onClick={() => {
                 setShowFlag(false);
                 setShowStats(true);
+                setGameType(gameName);
               }}
             >
               Stats

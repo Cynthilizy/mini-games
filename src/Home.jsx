@@ -1,11 +1,11 @@
 import Card from "./Card";
 import "./Home.css";
 
-function Home({ theme, flags, capitals, handleReset }) {
+function Home({ theme, flags, capitals, handleReset, authLoading }) {
   return (
     <div className="home-container">
       <div className="home-container-inner">
-        {flags.length == 0 || capitals.length == 0 ? (
+        {flags.length == 0 || capitals.length == 0 || authLoading ? (
           <h3>Loading...</h3>
         ) : (
           <div className="game-choices">

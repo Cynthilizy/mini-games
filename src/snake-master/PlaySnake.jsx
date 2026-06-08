@@ -1,19 +1,35 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import "./PlaySnake.css";
+import LoginForm from "../LoginForm";
 
-function PlaySnake({ theme, showSnake, setShowSnake }) {
+function PlaySnake({
+  theme,
+  showSnake,
+  setShowSnake,
+  API_URL,
+  username,
+  setUsername,
+  gameType,
+  setGameType,
+  bestGame,
+  bestGameTime,
+  lastGame,
+  lastGameTime,
+  sendScore,
+}) {
   const [showStats, setShowStats] = useState(false);
   const [snake, setSnake] = useState([[7, 7]]);
   const [direction, setDirection] = useState("RIGHT");
   const [apple, setApple] = useState([10, 8]);
   const [userScore, setUserScore] = useState(0);
-  const [username, SetUsername] = useState("");
   const [running, setRunning] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
   const [snakeFlash, setSnakeFlash] = useState(false);
   const [snakeShake, setSnakeShake] = useState(false);
   const [scorePop, setScorePop] = useState(false);
   const [speed, setSpeed] = useState(500);
+
+  const gameName = "snake";
 
   const directionRef = useRef("RIGHT");
   const nextDirectionRef = useRef("RIGHT");
@@ -179,7 +195,7 @@ function PlaySnake({ theme, showSnake, setShowSnake }) {
       setRunning(false);
       setSnakeFlash(true);
       setSnakeShake(true);
-
+      sendScore(userScore);
       setTimeout(() => {
         setSnakeShake(false);
       }, 300);
@@ -204,6 +220,7 @@ function PlaySnake({ theme, showSnake, setShowSnake }) {
       setRunning(false);
       setSnakeFlash(true);
       setSnakeShake(true);
+      sendScore(score);
       setTimeout(() => setSnakeShake(false), 300);
       return;
     }
@@ -339,7 +356,7 @@ function PlaySnake({ theme, showSnake, setShowSnake }) {
                   >
                     Restart
                   </button>
-                  {username ? (
+                  {username !== "" && (
                     <div>
                       <button
                         className="play-snake-user-stats"
@@ -347,17 +364,30 @@ function PlaySnake({ theme, showSnake, setShowSnake }) {
                           background: theme.elevated,
                           border: `2px solid ${theme.border}`,
                         }}
+                        onClick={() => {
+                          setGameType(gameName);
+                          setShowSnake(false);
+                          setShowStats(true);
+                          setIsPaused(true);
+                        }}
                       >
                         See Stats
                       </button>
                     </div>
-                  ) : (
+                  )}{" "}
+                  {username === "" && (
                     <div>
                       <button
                         className="play-snake-user-login"
                         style={{
                           background: theme.elevated,
                           border: `2px solid ${theme.border}`,
+                        }}
+                        onClick={() => {
+                          setGameType(gameName);
+                          setShowSnake(false);
+                          setShowStats(true);
+                          setIsPaused(true);
                         }}
                       >
                         Login
@@ -447,7 +477,21 @@ function PlaySnake({ theme, showSnake, setShowSnake }) {
             </div>
           </div>
         ) : showStats ? (
-          <div>Stats Coming Soon</div>
+          <div className="snake-stats-container">
+            <LoginForm
+              API_URL={API_URL}
+              username={username}
+              setUsername={setUsername}
+              gametype={gameType}
+              bestGame={bestGame}
+              bestGameTime={bestGameTime}
+              lastGame={lastGame}
+              lastGameTime={lastGameTime}
+              setShowGame={setShowSnake}
+              setShowStats={setShowStats}
+              theme={theme}
+            />
+          </div>
         ) : (
           <div
             className="start-snake"
@@ -459,6 +503,7 @@ function PlaySnake({ theme, showSnake, setShowSnake }) {
               className="start-snake-btn"
               onClick={() => {
                 setShowSnake(true);
+                setGameType(gameName);
               }}
             >
               Play
@@ -468,6 +513,7 @@ function PlaySnake({ theme, showSnake, setShowSnake }) {
               onClick={() => {
                 setShowSnake(false);
                 setShowStats(true);
+                setGameType(gameName);
               }}
             >
               Stats
