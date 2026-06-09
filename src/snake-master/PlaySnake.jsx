@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import "./PlaySnake.css";
 import LoginForm from "../LoginForm";
+import sendScore from "../ScoreSender";
 
 function PlaySnake({
   theme,
@@ -15,12 +16,16 @@ function PlaySnake({
   bestGameTime,
   lastGame,
   lastGameTime,
-  sendScore,
+  setScoreRefreshKey,
 }) {
+  const INITIAL_SNAKE = [[7, 7]];
+  const INITIAL_DIR = "RIGHT";
+  const INITIAL_APPLE = [10, 8];
+
   const [showStats, setShowStats] = useState(false);
-  const [snake, setSnake] = useState([[7, 7]]);
-  const [direction, setDirection] = useState("RIGHT");
-  const [apple, setApple] = useState([10, 8]);
+  const [snake, setSnake] = useState(INITIAL_SNAKE);
+  const [direction, setDirection] = useState(INITIAL_DIR);
+  const [apple, setApple] = useState(INITIAL_APPLE);
   const [userScore, setUserScore] = useState(0);
   const [running, setRunning] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
@@ -31,10 +36,11 @@ function PlaySnake({
 
   const gameName = "snake";
 
-  const directionRef = useRef("RIGHT");
-  const nextDirectionRef = useRef("RIGHT");
-  const appleRef = useRef([10, 8]);
-  const snakeRef = useRef([[7, 7]]);
+  const directionRef = useRef(INITIAL_DIR);
+  const nextDirectionRef = useRef(INITIAL_DIR);
+  const appleRef = useRef(INITIAL_APPLE);
+  const snakeRef = useRef(INITIAL_SNAKE);
+  const scoreRef = useRef(0);
 
   const GRID_SIZE = 20;
 
@@ -118,22 +124,29 @@ function PlaySnake({
 
   const isWall = (x, y) => walls.some(([wx, wy]) => wx === x && wy === y);
 
+  const addScore = () => {
+    scoreRef.current += 1;
+    setUserScore(scoreRef.current);
+  };
+
+  const resetScore = () => {
+    scoreRef.current = 0;
+    setUserScore(scoreRef.current); // optional UI
+  };
+
   const resetGame = () => {
     setRunning(false); // STOP LOOP FIRST
-
-    const INITIAL_SNAKE = [[7, 7]];
-    const INITIAL_DIR = "RIGHT";
-    const INITIAL_APPLE = [10, 8];
 
     snakeRef.current = INITIAL_SNAKE;
     directionRef.current = INITIAL_DIR;
     appleRef.current = INITIAL_APPLE;
+    nextDirectionRef.current = INITIAL_DIR;
 
     setSnake(INITIAL_SNAKE);
     setDirection(INITIAL_DIR);
     setApple(INITIAL_APPLE);
 
-    setUserScore(0);
+    resetScore();
     setIsPaused(false);
     setSnakeFlash(false);
     setSpeed(500);
@@ -195,7 +208,12 @@ function PlaySnake({
       setRunning(false);
       setSnakeFlash(true);
       setSnakeShake(true);
-      sendScore(userScore);
+      sendScore({
+        username,
+        gameType: gameName,
+        score: scoreRef.current,
+        onSuccess: () => setScoreRefreshKey((prevKey) => prevKey + 1),
+      });
       setTimeout(() => {
         setSnakeShake(false);
       }, 300);
@@ -220,18 +238,20 @@ function PlaySnake({
       setRunning(false);
       setSnakeFlash(true);
       setSnakeShake(true);
-      sendScore(score);
+      sendScore({
+        username,
+        gameType: gameName,
+        score: scoreRef.current,
+        onSuccess: () => setScoreRefreshKey((prevKey) => prevKey + 1),
+      });
       setTimeout(() => setSnakeShake(false), 300);
       return;
     }
 
     if (ateApple) {
-      setUserScore((s) => {
-        const newScore = s + 1;
-        const newSpeed = Math.max(100, 500 - newScore * 20);
-        setSpeed(newSpeed);
-        return newScore;
-      });
+      addScore();
+      const newSpeed = Math.max(100, 500 - scoreRef.current * 20);
+      setSpeed(newSpeed);
       setScorePop(true);
       setTimeout(() => setScorePop(false), 200);
 
@@ -368,7 +388,9 @@ function PlaySnake({
                           setGameType(gameName);
                           setShowSnake(false);
                           setShowStats(true);
-                          setIsPaused(true);
+                          {
+                            !snakeFlash && setIsPaused(true);
+                          }
                         }}
                       >
                         See Stats
@@ -387,7 +409,9 @@ function PlaySnake({
                           setGameType(gameName);
                           setShowSnake(false);
                           setShowStats(true);
-                          setIsPaused(true);
+                          {
+                            !snakeFlash && setIsPaused(true);
+                          }
                         }}
                       >
                         Login
@@ -444,8 +468,17 @@ function PlaySnake({
                     </div>
                   );
                 })}
-                {isPaused && <h3 className="snake-paused">Paused</h3>}
-                {snakeFlash && <h3 className="snake-gameover">Game Over</h3>}
+                {isPaused && (
+                  <div className="snake-overlay">
+                    <h3>Paused</h3>
+                  </div>
+                )}
+
+                {snakeFlash && (
+                  <div className="snake-gameover snake-overlay">
+                    <h3>Game Over</h3>
+                  </div>
+                )}
                 {walls.map(([x, y], i) => (
                   <img
                     key={`wall-${i}`}
@@ -468,12 +501,12 @@ function PlaySnake({
                 />
               </div>
             </div>
-            <div className="screen-error-flag">
-              <h3 className="screen-error-flag-title">
+            <div className="screen-error-snake">
+              <h3 className="screen-error-snake-title">
                 This Game Requires More Space
               </h3>
-              <img src="/fail.gif" className="screen-error-flag-icon" />
-              <h3 className="screen-error-flag-text">Screen Size Too Small</h3>
+              <img src="/fail.gif" className="screen-error-snake-icon" />
+              <h3 className="screen-error-snake-text">Screen Size Too Small</h3>
             </div>
           </div>
         ) : showStats ? (
@@ -516,7 +549,7 @@ function PlaySnake({
                 setGameType(gameName);
               }}
             >
-              Stats
+              {username === "" ? "Login" : "See Stats"}
             </button>
           </div>
         )}

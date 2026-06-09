@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./PlayCapitals.css";
 import { typography } from "../typography";
 import Clock from "../assets/clock.svg?react";
 import confetti from "canvas-confetti";
 import LoginForm from "../LoginForm";
+import sendScore from "../ScoreSender";
 
 function PlayCapitals({
   capitals,
@@ -19,7 +20,7 @@ function PlayCapitals({
   bestGameTime,
   lastGame,
   lastGameTime,
-  sendScore,
+  setScoreRefreshKey,
 }) {
   const [showStats, setShowStats] = useState(false);
   const [answer, setAnswer] = useState("");
@@ -32,6 +33,7 @@ function PlayCapitals({
   const [flash, setFlash] = useState(false);
 
   const gameName = "capitals";
+  const scoreRef = useRef(0);
 
   const shuffle = () => {
     const randomNum = Math.random();
@@ -44,13 +46,23 @@ function PlayCapitals({
     setAnswer(event.target.value);
   };
 
+  const addScore = () => {
+    scoreRef.current += 1;
+    setScore(scoreRef.current);
+  };
+
+  const resetScore = () => {
+    scoreRef.current = 0;
+    setScore(scoreRef.current);
+  };
+
   const checkSubmit = () => {
     const randomCapital = random.capital.trim().toLowerCase();
     const userAnswer = answer.trim().toLowerCase();
 
     if (randomCapital === userAnswer) {
       setTimerRunning(false);
-      setScore((prev) => prev + 1);
+      addScore();
       setShowCorrect(true);
       requestAnimationFrame(() => {
         confetti({
@@ -123,7 +135,7 @@ function PlayCapitals({
           </div>
         )}
         {showCapital ? (
-          <div>
+          <div className="play-capital-wrapper">
             <div className="play-capital">
               <div
                 className="play-capital-score-container"
@@ -221,7 +233,13 @@ function PlayCapitals({
                       border: `2px solid ${theme.border}`,
                     }}
                     onClick={() => {
-                      sendScore(score);
+                      sendScore({
+                        username,
+                        gameType: gameName,
+                        score: scoreRef.current,
+                        onSuccess: () =>
+                          setScoreRefreshKey((prevKey) => prevKey + 1),
+                      });
                       let result = shuffle();
                       if (random === null) {
                         setRandom(result);
@@ -236,7 +254,7 @@ function PlayCapitals({
                       setAnswer("");
                       setShowFail(false);
                       setShowStats(false);
-                      setScore(0);
+                      resetScore();
                       setTimeLeft(60);
                       setTimerRunning(true);
                     }}
@@ -365,7 +383,7 @@ function PlayCapitals({
                 }
                 setShowStats(false);
                 setShowCapital(true);
-                setScore(0);
+                resetScore();
                 setTimeLeft(60);
                 setTimerRunning(true);
                 setGameType(gameName);
@@ -381,7 +399,7 @@ function PlayCapitals({
                 setGameType(gameName);
               }}
             >
-              Stats
+              {username === "" ? "Login" : "See Stats"}
             </button>
           </div>
         )}
