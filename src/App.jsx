@@ -84,7 +84,7 @@ function App() {
           withCredentials: true,
         });
 
-        setUsername(res.data.user.username);
+        setUsername(res.data.username);
       } catch {
         setUsername("");
       } finally {
