@@ -317,6 +317,10 @@
   }
 }
 
+.flag-stats-container {
+  width: 60%;
+}
+
 @media (width<800px) {
   .play-flag {
     grid-template-columns: 15% 50% 15%;

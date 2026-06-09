@@ -11,11 +11,255 @@
   flex-direction: column;
 }
 
+.home-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.home-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin-bottom: 30px;
+}
+
+.home-username {
+  font-weight: 800;
+  font-size: 1.2rem;
+  letter-spacing: 0.06em;
+
+  padding: 6px 12px;
+  border-radius: 10px;
+
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(120, 200, 255, 0.25);
+
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  backdrop-filter: blur(10px);
+}
+
+.home-header button {
+  padding: 6px 12px;
+  border-radius: 10px;
+
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+
+  color: inherit;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.home-header button:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.1);
+}
+
 .game-choices {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
   flex-wrap: wrap;
+}
+
+.home-close-login-btn {
+  position: absolute;
+  left: -1px;
+  width: 30px;
+  height: 30px;
+
+  border-radius: 50%;
+  padding: 8px;
+
+  cursor: pointer;
+
+  background: rgba(0, 0, 0, 0.2);
+  color: inherit;
+
+  z-index: 10;
+
+  transition: 0.2s ease;
+}
+
+.home-close-login-btn:hover {
+  background: rgba(0, 0, 0, 0.35);
+  transform: scale(1.05);
+}
+
+.home-modal-overlay {
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+
+  z-index: 9999;
+}
+
+.home-modal {
+  position: relative;
+
+  width: min(420px, 92vw);
+
+  padding: 32px;
+
+  border-radius: 24px;
+
+  background: rgba(20, 20, 25, 0.95);
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(255, 255, 255, 0.05);
+
+  outline: none;
+}
+
+.home-login-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.home-login-header h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.home-login-header p {
+  margin-top: 8px;
+  opacity: 0.7;
+  font-size: 0.95rem;
+}
+
+.home-login-input-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.home-login-input-fields input {
+  width: 100%;
+
+  padding: 14px 16px;
+
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+
+  font-size: 0.95rem;
+}
+
+.home-login-input-fields input:focus {
+  outline: none;
+
+  border-color: rgba(255, 255, 255, 0.4);
+
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+}
+
+.home-error-login {
+  min-height: 24px;
+
+  margin: 10px 0;
+
+  text-align: center;
+
+  color: #ff6464;
+  font-size: 0.9rem;
+}
+
+.home-login-submit-btns {
+  display: flex;
+  gap: 12px;
+
+  margin-top: 10px;
+}
+
+.home-login-submit-btns button {
+  flex: 1;
+
+  padding: 12px;
+
+  border: none;
+  border-radius: 12px;
+
+  font-weight: 700;
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.home-login-submit-btns button:hover {
+  transform: translateY(-2px);
+}
+
+.home-login-divider {
+  text-align: center;
+  margin: 26px 0 16px;
+
+  opacity: 0.6;
+}
+
+.home-login-icons {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+}
+
+.home-login-icons button {
+  width: 54px;
+  height: 54px;
+
+  border-radius: 50%;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  background: rgba(255, 255, 255, 0.04);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.home-login-icons button:hover {
+  transform: translateY(-3px) scale(1.05);
+}
+
+.home-close-login-btn {
+  position: absolute;
+
+  top: 16px;
+  right: 16px;
+
+  font-size: 1.8rem;
+
+  cursor: pointer;
+
+  opacity: 0.7;
+
+  transition: 0.2s;
+}
+
+.home-close-login-btn:hover {
+  opacity: 1;
+  transform: rotate(90deg);
 }
 
 @media (width<1015px) {

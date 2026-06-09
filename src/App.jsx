@@ -29,14 +29,13 @@ function App() {
   const [bestGameTime, setBestGameTime] = useState("");
   const [lastGame, setLastGame] = useState(0);
   const [lastGameTime, setLastGameTime] = useState("");
+  const [scoreRefreshKey, setScoreRefreshKey] = useState(0);
 
   const theme = colors[mode];
 
   const location = useLocation();
 
   const API_URL = import.meta.env.VITE_API_URL;
-
-  let lastSent = 0;
 
   useEffect(() => {
     const task = async () => {
@@ -96,6 +95,9 @@ function App() {
     checkAuth();
   }, []);
 
+  const formatStatDate = (val) =>
+    val ? new Date(val).toLocaleString("fi-FI") : "---";
+
   useEffect(() => {
     if (username === "" || gameType === "") return;
 
@@ -114,10 +116,10 @@ function App() {
         }
 
         setLastGame(data.last_score || 0);
-        setLastGameTime(data.last_score > 0 ? data.last_played_at : "---");
+        setLastGameTime(formatStatDate(data.last_played_at));
 
         setBestGame(data.best_score || 0);
-        setBestGameTime(data.best_score > 0 ? data.best_score_time : "---");
+        setBestGameTime(formatStatDate(data.best_score_time));
       } catch (err) {
         console.error(err);
 
@@ -129,22 +131,7 @@ function App() {
     };
 
     getScore();
-  }, [username, gameType]);
-
-  const sendScore = async (score) => {
-    if (!username || !gameType || score == null || score <= 0) return;
-    try {
-      const res = await axios.post(
-        `${API_URL}/submit-score`,
-        { gameType, score },
-        { withCredentials: true },
-      );
-      setGameType(gameType);
-      return res.data;
-    } catch (err) {
-      console.error("Score submit failed:", err.response?.data || err.message);
-    }
-  };
+  }, [username, gameType, scoreRefreshKey]);
 
   return (
     <div className="app" style={{ backgroundImage: `url(${theme.wall})` }}>
@@ -163,6 +150,9 @@ function App() {
                 capitals={capitals}
                 handleReset={handleReset}
                 authLoading={authLoading}
+                username={username}
+                APÄI_URL={API_URL}
+                setUsername={setUsername}
               />
             }
           ></Route>
@@ -183,7 +173,7 @@ function App() {
                 bestGameTime={bestGameTime}
                 lastGame={lastGame}
                 lastGameTime={lastGameTime}
-                sendScore={sendScore}
+                setScoreRefreshKey={setScoreRefreshKey}
               />
             }
           ></Route>
@@ -204,7 +194,7 @@ function App() {
                 bestGameTime={bestGameTime}
                 lastGame={lastGame}
                 lastGameTime={lastGameTime}
-                sendScore={sendScore}
+                setScoreRefreshKey={setScoreRefreshKey}
               />
             }
           ></Route>
@@ -224,7 +214,7 @@ function App() {
                 bestGameTime={bestGameTime}
                 lastGame={lastGame}
                 lastGameTime={lastGameTime}
-                sendScore={sendScore}
+                setScoreRefreshKey={setScoreRefreshKey}
               />
             }
           ></Route>
@@ -244,7 +234,7 @@ function App() {
                 bestGameTime={bestGameTime}
                 lastGame={lastGame}
                 lastGameTime={lastGameTime}
-                sendScore={sendScore}
+                setScoreRefreshKey={setScoreRefreshKey}
               />
             }
           ></Route>

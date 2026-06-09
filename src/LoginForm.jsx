@@ -5,6 +5,9 @@ import Facebook from "./assets/facebook.svg?react";
 import axios from "axios";
 import ReactModal from "react-modal";
 import { IoClose } from "react-icons/io5";
+import Loader from "./Loader";
+
+ReactModal.setAppElement("#root");
 
 export default function LoginForm({
   API_URL,
@@ -25,7 +28,10 @@ export default function LoginForm({
   const [showChangeName, setShowChangeName] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
+
   const [loading, setLoading] = useState(false);
+  const [loadingText, setLoadingText] = useState("");
+  const [loadingVariant, setLoadingVariant] = useState("");
 
   const [newUsername, setNewUsername] = useState("");
 
@@ -38,6 +44,8 @@ export default function LoginForm({
       setError("email and Password must be provided");
       return;
     }
+    setLoadingText("Logging in...");
+    setLoadingVariant("spinner");
     setLoading(true);
     try {
       const res = await axios.post(
@@ -52,6 +60,8 @@ export default function LoginForm({
       setError(err.response?.data?.error || "Login failed");
     }
     setLoading(false);
+    setLoadingText("");
+    setLoadingVariant("");
   };
 
   const handleSignup = async () => {
@@ -59,6 +69,8 @@ export default function LoginForm({
       setError("email and Password must be provided");
       return;
     }
+    setLoadingText("Signing up...");
+    setLoadingVariant("spinner");
     setLoading(true);
     try {
       await axios.post(`${API_URL}/register`, { email, password });
@@ -68,6 +80,8 @@ export default function LoginForm({
       setError(err.response?.data?.error || "Signup failed");
     }
     setLoading(false);
+    setLoadingText("");
+    setLoadingVariant("");
   };
 
   const handleChangeName = async () => {
@@ -75,6 +89,8 @@ export default function LoginForm({
       setError("enter new username");
       return;
     }
+    setLoadingText("Updating username...");
+    setLoadingVariant("spinner");
     setLoading(true);
     try {
       const res = await axios.put(
@@ -94,6 +110,8 @@ export default function LoginForm({
       setError(err.response?.data?.error || "Unable to update username");
     }
     setLoading(false);
+    setLoadingText("");
+    setLoadingVariant("");
   };
 
   const handleChangePassword = async () => {
@@ -107,6 +125,8 @@ export default function LoginForm({
       return;
     }
 
+    setLoadingText("Updating password...");
+    setLoadingVariant("spinner");
     setLoading(true);
 
     try {
@@ -130,9 +150,13 @@ export default function LoginForm({
       setError(err.response?.data?.error || "Unable to change password");
     }
     setLoading(false);
+    setLoadingText("");
+    setLoadingVariant("");
   };
 
   const handleDeleteAccount = async () => {
+    setLoadingText("Deleting account...");
+    setLoadingVariant("spinner");
     setLoading(true);
     try {
       await axios.put(
@@ -149,9 +173,13 @@ export default function LoginForm({
       setError(err.response?.data?.error || "Unable to delete account");
     }
     setLoading(false);
+    setLoadingText("");
+    setLoadingVariant("");
   };
 
   const handleLogout = async () => {
+    setLoadingText("Logging out...");
+    setLoadingVariant("spinner");
     setLoading(true);
     try {
       await axios.post(
@@ -168,15 +196,18 @@ export default function LoginForm({
       console.error(err);
     }
     setLoading(false);
+    setLoadingText("");
+    setLoadingVariant("");
   };
 
   return (
     <div className="user-login-area" style={{ color: theme.textPrimary }}>
       {loading && (
-        <div className="loading-overlay">
-          <img src="/loading.gif" className="loading-img" />
-          <h3>Loading data...</h3>
-        </div>
+        <Loader
+          text={loadingText}
+          variant={loadingVariant}
+          style={{ position: "absolute", top: "50%", left: "50%" }}
+        />
       )}
       <IoClose
         className="close-login-btn"
@@ -237,7 +268,7 @@ export default function LoginForm({
         </div>
       ) : (
         <div className="user-view-area">
-          <h2 className="welcome-user">
+          <h2 className="welcome-user" style={{ color: theme.textPrimary }}>
             Welcome, <span>{username}</span>
           </h2>
 

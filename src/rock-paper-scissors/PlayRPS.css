@@ -173,6 +173,14 @@
     background 0.2s ease;
 }
 
+.play-rps-pause-btn,
+.play-rps-user-stats,
+.play-rps-reset-btn,
+.play-rps-user-login {
+  min-width: 110px;
+  min-height: 42px;
+}
+
 .play-rps-pause-btn:hover,
 .play-rps-reset-btn:hover,
 .play-rps-user-stats:hover,
@@ -276,6 +284,10 @@
   100% {
     background: transparent;
   }
+}
+
+.rps-stats-container {
+  width: 60%;
 }
 
 @media (width<443px) {

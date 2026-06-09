@@ -4,6 +4,7 @@ import { typography } from "../typography";
 import Clock from "../assets/clock.svg?react";
 import confetti from "canvas-confetti";
 import LoginForm from "../LoginForm";
+import sendScore from "../ScoreSender";
 
 function PlayRPS({
   theme,
@@ -18,7 +19,7 @@ function PlayRPS({
   bestGameTime,
   lastGame,
   lastGameTime,
-  sendScore,
+  setScoreRefreshKey,
 }) {
   const [showStats, setShowStats] = useState(false);
   const [userChoice, setUserChoice] = useState("");
@@ -40,6 +41,7 @@ function PlayRPS({
   const hasResolvedRef = useRef(false);
   const userRef = useRef("");
   const compRef = useRef("");
+  const scoreRef = useRef(0);
 
   const options = ["R", "P", "S"];
   const rules = {
@@ -53,6 +55,16 @@ function PlayRPS({
     const randomIndex = Math.floor(randomNum * options.length);
     const newRandom = options[randomIndex];
     return newRandom;
+  };
+
+  const addScore = () => {
+    scoreRef.current += 1;
+    setUserScore(scoreRef.current);
+  };
+
+  const resetScore = () => {
+    scoreRef.current = 0;
+    setUserScore(scoreRef.current); // optional UI
   };
 
   const resetRound = () => {
@@ -81,7 +93,7 @@ function PlayRPS({
     setTimerRunning(false);
 
     if (result === "win") {
-      setUserScore((p) => p + 1);
+      addScore();
       requestAnimationFrame(() => {
         confetti({
           particleCount: 150,
@@ -332,8 +344,14 @@ function PlayRPS({
                   border: `2px solid ${theme.border}`,
                 }}
                 onClick={() => {
-                  sendScore(userScore);
-                  setUserScore(0);
+                  sendScore({
+                    username,
+                    gameType: gameName,
+                    score: scoreRef.current,
+                    onSuccess: () =>
+                      setScoreRefreshKey((prevKey) => prevKey + 1),
+                  });
+                  resetScore();
                   setComputerScore(0);
                   resetRound();
                   setIsPaused(false);
@@ -422,7 +440,7 @@ function PlayRPS({
                 setGameType(gameName);
               }}
             >
-              Stats
+              {username === "" ? "Login" : "See Stats"}
             </button>
           </div>
         )}

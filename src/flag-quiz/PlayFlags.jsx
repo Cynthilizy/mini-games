@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./PlayFlags.css";
 import { typography } from "../typography";
 import Clock from "../assets/clock.svg?react";
 import { code } from "country-emoji";
 import confetti from "canvas-confetti";
 import LoginForm from "../LoginForm";
+import sendScore from "../ScoreSender";
 
 function PlayFlags({
   flags,
@@ -20,7 +21,7 @@ function PlayFlags({
   bestGameTime,
   lastGame,
   lastGameTime,
-  sendScore,
+  setScoreRefreshKey,
 }) {
   const [showStats, setShowStats] = useState(false);
   const [answer, setAnswer] = useState("");
@@ -33,6 +34,7 @@ function PlayFlags({
   const [flash, setFlash] = useState(false);
 
   const gameName = "flags";
+  const scoreRef = useRef(0);
 
   const shuffle = () => {
     const randomNum = Math.random();
@@ -42,6 +44,16 @@ function PlayFlags({
       ...selected,
       flag: code(selected.flag).toLowerCase(),
     };
+  };
+
+  const addScore = () => {
+    scoreRef.current += 1;
+    setScore(scoreRef.current);
+  };
+
+  const resetScore = () => {
+    scoreRef.current = 0;
+    setScore(scoreRef.current); // optional UI
   };
 
   const handleAnswerChange = (event) => {
@@ -54,7 +66,7 @@ function PlayFlags({
 
     if (randomCountry === userAnswer) {
       setTimerRunning(false);
-      setScore((prev) => prev + 1);
+      addScore();
       setShowCorrect(true);
       requestAnimationFrame(() => {
         confetti({
@@ -183,7 +195,13 @@ function PlayFlags({
                       border: `2px solid ${theme.border}`,
                     }}
                     onClick={() => {
-                      sendScore(score);
+                      sendScore({
+                        username,
+                        gameType: gameName,
+                        score: scoreRef.current,
+                        onSuccess: () =>
+                          setScoreRefreshKey((prevKey) => prevKey + 1),
+                      });
                       let result = shuffle();
                       if (random === null) {
                         setRandom(result);
@@ -198,7 +216,7 @@ function PlayFlags({
                       setAnswer("");
                       setShowFail(false);
                       setShowStats(false);
-                      setScore(0);
+                      resetScore();
                       setTimeLeft(60);
                       setTimerRunning(true);
                     }}
@@ -336,7 +354,7 @@ function PlayFlags({
                 }
                 setShowStats(false);
                 setShowFlag(true);
-                setScore(0);
+                resetScore();
                 setTimeLeft(60);
                 setTimerRunning(true);
                 setGameType(gameName);
@@ -352,7 +370,7 @@ function PlayFlags({
                 setGameType(gameName);
               }}
             >
-              Stats
+              {username === "" ? "Login" : "See Stats"}
             </button>
           </div>
         )}
