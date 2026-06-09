@@ -255,14 +255,6 @@ export default function LoginForm({
               >
                 <Gmail />
               </button>
-
-              <button
-                onClick={() =>
-                  (window.location.href = `${API_URL}/auth/facebook`)
-                }
-              >
-                <Facebook />
-              </button>
             </div>
           </div>
         </div>
