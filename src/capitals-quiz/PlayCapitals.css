@@ -322,7 +322,7 @@
 }
 
 .capital-stats-container {
-  width: 60%;
+  width: 100%;
 }
 
 @media (width< 425px) {

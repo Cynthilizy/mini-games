@@ -1,7 +1,6 @@
 import { useState } from "react";
 import "./LoginForm.css";
 import Gmail from "./assets/gmail.svg?react";
-import Facebook from "./assets/facebook.svg?react";
 import axios from "axios";
 import ReactModal from "react-modal";
 import { IoClose } from "react-icons/io5";
@@ -209,16 +208,16 @@ export default function LoginForm({
           style={{ position: "absolute", top: "50%", left: "50%" }}
         />
       )}
-      <IoClose
-        className="close-login-btn"
-        onClick={() => {
-          setShowStats(false);
-          setShowGame(true);
-        }}
-        aria-label="Close"
-      />
       {username === "" ? (
-        <div className="login-section">
+        <div className="login-section" style={{ color: "white" }}>
+          <IoClose
+            className="close-login-btn"
+            onClick={() => {
+              setShowStats(false);
+              setShowGame(true);
+            }}
+            aria-label="Close"
+          />
           <div className="login-form">
             <div className="login-input-fields">
               <input
@@ -260,6 +259,14 @@ export default function LoginForm({
         </div>
       ) : (
         <div className="user-view-area">
+          <IoClose
+            className="close-user-btn"
+            onClick={() => {
+              setShowStats(false);
+              setShowGame(true);
+            }}
+            aria-label="Close"
+          />
           <h2 className="welcome-user" style={{ color: theme.textPrimary }}>
             Welcome, <span>{username}</span>
           </h2>
