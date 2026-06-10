@@ -365,6 +365,9 @@ function PlayCapitals({
             className="start-capital"
             style={{
               backgroundImage: "url(/grass-land.gif)",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
             }}
           >
             <button

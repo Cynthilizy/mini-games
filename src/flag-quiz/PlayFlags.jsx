@@ -336,6 +336,9 @@ function PlayFlags({
             className="start-flag"
             style={{
               backgroundImage: "url(/grass-land.gif)",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
             }}
           >
             <button

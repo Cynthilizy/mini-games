@@ -421,6 +421,9 @@ function PlayRPS({
             className="start-rps"
             style={{
               backgroundImage: "url(/grass-land.gif)",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
             }}
           >
             <button
