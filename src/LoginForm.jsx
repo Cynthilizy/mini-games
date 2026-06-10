@@ -20,6 +20,7 @@ export default function LoginForm({
   setShowGame,
   setShowStats,
   theme,
+  resetRound,
 }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -215,6 +216,7 @@ export default function LoginForm({
             onClick={() => {
               setShowStats(false);
               setShowGame(true);
+              resetRound();
             }}
             aria-label="Close"
           />
@@ -264,6 +266,7 @@ export default function LoginForm({
             onClick={() => {
               setShowStats(false);
               setShowGame(true);
+              resetRound();
             }}
             aria-label="Close"
           />

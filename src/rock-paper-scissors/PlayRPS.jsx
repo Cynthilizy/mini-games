@@ -413,6 +413,7 @@ function PlayRPS({
               setShowGame={setShowRps}
               setShowStats={setShowStats}
               theme={theme}
+              resetRound={resetRound}
             />
           </div>
         ) : (

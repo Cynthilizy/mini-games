@@ -368,6 +368,19 @@ function PlayFlags({
                 setShowFlag(false);
                 setShowStats(true);
                 setGameType(gameName);
+                if (!random) {
+                  let result = shuffle();
+                  if (random === null) {
+                    setRandom(result);
+                  } else if (random?.id === result?.id) {
+                    do {
+                      result = shuffle();
+                      setRandom(result);
+                    } while (result?.id === random?.id);
+                  } else {
+                    setRandom(result);
+                  }
+                }
               }}
             >
               {username === "" ? "Login" : "See Stats"}
