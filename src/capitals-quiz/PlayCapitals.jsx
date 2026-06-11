@@ -397,6 +397,17 @@ function PlayCapitals({
             <button
               className="start-capital-btn"
               onClick={() => {
+                let result = shuffle();
+                if (random === null) {
+                  setRandom(result);
+                } else if (random?.id === result?.id) {
+                  do {
+                    result = shuffle();
+                    setRandom(result);
+                  } while (result?.id === random?.id);
+                } else {
+                  setRandom(result);
+                }
                 setShowCapital(false);
                 setShowStats(true);
                 setGameType(gameName);
